@@ -23,9 +23,12 @@
   "homepage": "https://github.com/AGrzes/image-organizer#readme",
   "devDependencies": {
     "chai": "^4.0.1",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "mock-fs": "^4.3.0",
+    "streamtest": "^1.2.2"
   },
   "dependencies": {
-    "vinyl-fs": "^2.4.4"
+    "glob-stream": "^6.1.0",
+    "mississippi": "^1.3.0"
   }
 }
