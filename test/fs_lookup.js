@@ -8,9 +8,31 @@ describe('fs_lookup', () => {
                 it('should calculate md5', (done) => {
                     StreamTest[version].fromObjects([{
                         file: 'test/data/md5'
-                    }]).pipe(fs_lookup.md5()).pipe(StreamTest[version].toObjects((error, objects) => {                       
+                    }]).pipe(fs_lookup.md5()).pipe(StreamTest[version].toObjects((error, objects) => {
                         expect(objects).to.containSubset([{
                             md5: 'd41d8cd98f00b204e9800998ecf8427e'
+                        }])
+                        done(error);
+                    }))
+                })
+            })
+            describe('mime', () => {
+                it('should recognize png', (done) => {
+                    StreamTest[version].fromObjects([{
+                        file: 'test/data/png'
+                    }]).pipe(fs_lookup.mime()).pipe(StreamTest[version].toObjects((error, objects) => {
+                        expect(objects).to.containSubset([{
+                            mime: 'image/png'
+                        }])
+                        done(error);
+                    }))
+                })
+                it('should recognize jpg', (done) => {
+                    StreamTest[version].fromObjects([{
+                        file: 'test/data/jpg'
+                    }]).pipe(fs_lookup.mime()).pipe(StreamTest[version].toObjects((error, objects) => {
+                        expect(objects).to.containSubset([{
+                            mime: 'image/jpeg'
                         }])
                         done(error);
                     }))
