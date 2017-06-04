@@ -38,6 +38,36 @@ describe('fs_lookup', () => {
                     }))
                 })
             })
+            describe('exif', () => {
+                it('should analyze png', (done) => {
+                    StreamTest[version].fromObjects([{
+                        file: 'test/data/png'
+                    }]).pipe(fs_lookup.exif()).pipe(StreamTest[version].toObjects((error, objects) => {
+                        expect(objects).to.containSubset([{
+                            exif: {
+                                MIMEType: 'image/png',
+                                ImageHeight: 1,
+                                ImageWidth: 1
+                            }
+                        }])
+                        done(error);
+                    }))
+                })
+                it('should analyze jpg', (done) => {
+                    StreamTest[version].fromObjects([{
+                        file: 'test/data/jpg'
+                    }]).pipe(fs_lookup.exif()).pipe(StreamTest[version].toObjects((error, objects) => {
+                        expect(objects).to.containSubset([{
+                            exif: {
+                                MIMEType: 'image/jpeg',
+                                ImageHeight: 1,
+                                ImageWidth: 1
+                            }
+                        }])
+                        done(error);
+                    }))
+                })
+            })
         })
     })
 })
