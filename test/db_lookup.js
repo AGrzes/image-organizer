@@ -30,22 +30,56 @@ describe('fs_lookup', () => {
 
             it('should construct document if not found', (done) => {
                 StreamTest[version].fromObjects([{
-                    md5: '!md5',
-                    file: 'file',
-                    exif: 'exif'
+                    md5: '!md5'
+                }]).pipe(db_lookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
+                    expect(objects).to.containSubset([{
+                        doc: {}
+                    }])
+                    done(error);
+                }))
+            })
+
+            it('should initialize id if not found', (done) => {
+                StreamTest[version].fromObjects([{
+                    md5: '!md5'
                 }]).pipe(db_lookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
                     expect(objects).to.containSubset([{
                         doc: {
-                            _id: '!md5',
-                            files: {
-                                file: 'PRESENT'
-                            },
-                            exif: 'exif'
+                            _id: '!md5'
                         }
                     }])
                     done(error);
                 }))
             })
+
+            it('should initialize files if not found', (done) => {
+                StreamTest[version].fromObjects([{
+                    md5: '!md5',
+                    file: 'file'
+                }]).pipe(db_lookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
+                    expect(objects).to.containSubset([{
+                        doc: {
+                            files: {
+                                file: 'PRESENT'
+                            }
+                        }
+                    }])
+                    done(error);
+                }))
+            })
+            it('should initialize exif if not found', (done) => {
+                StreamTest[version].fromObjects([{
+                    md5: '!md5',
+                    exif: 'exif'
+                }]).pipe(db_lookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
+                    expect(objects).to.containSubset([{
+                        doc: {
+                            exif: 'exif'
+                        }
+                    }])
+                    done(error);
+                }))
+            })            
         })
 
     })
