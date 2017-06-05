@@ -3,7 +3,7 @@ var miss = require('mississippi');
 var mime = require('mime');
 var Exif = require("simple-exiftool");
 module.exports.md5 = () => miss.through.obj((message, enc, cb) => md5File(message.file).then((md5) => message.md5 = md5).then(() => cb(null, message)).catch((error) => {
-    console.error(error);
+    cb();
 }))
 
 module.exports.mime = () => miss.through.obj((message, enc, cb) => {

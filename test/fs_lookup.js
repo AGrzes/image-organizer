@@ -15,6 +15,16 @@ describe('fs_lookup', () => {
                         done(error);
                     }))
                 })
+                it('should fail gracefully', (done) => {
+                    StreamTest[version].fromObjects([{
+                        file: 'test/data/!md5'
+                    }]).pipe(fs_lookup.md5()).pipe(StreamTest[version].toObjects((error, objects) => {
+                        expect(objects).not.to.containSubset([{
+                            file: 'test/data/!md5'
+                        }])
+                        done(error);
+                    }))
+                })
             })
             describe('mime', () => {
                 it('should recognize png', (done) => {
