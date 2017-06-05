@@ -3,7 +3,7 @@ var db_scan = require('../db_scan');
 var StreamTest = require('streamtest');
 var PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapreduce'));
-var db = new PouchDB('db', {
+var db = new PouchDB('db_scan', {
   adapter: 'memory'
 });
 
