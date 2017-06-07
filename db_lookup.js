@@ -1,4 +1,5 @@
 var miss = require("mississippi");
+var debug = require("debug")("db_lookup");
 module.exports = (db) => miss.through.obj((message, enc, cb) => db.get(message.md5).then((doc) => message.doc = doc).catch((error) => {
     if (error.name === "not_found") {
         message.doc = {
@@ -9,6 +10,6 @@ module.exports = (db) => miss.through.obj((message, enc, cb) => db.get(message.m
             }
         };
     } else {
-        console.error(error);
+        debug(error);
     }
 }).then(() => cb(null, message)));
