@@ -21,7 +21,7 @@ describe("db_scan", () => {
                     if (err) {
                         done(err);
                     } else {
-                        db.get(version + "_doc1").then((doc) => done()).catch(done);
+                        db.get(version + "_doc1").then(() => done()).catch(done);
                     }
                 });
             });
