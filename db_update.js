@@ -1,4 +1,4 @@
-var Ouch = require('ouch-stream')
+var Ouch = require("ouch-stream");
 module.exports = (db) => new Ouch(db).merge((message, doc) => {
     if (doc){
         Object.assign(doc.files,message.doc.files);
@@ -6,4 +6,4 @@ module.exports = (db) => new Ouch(db).merge((message, doc) => {
     } else {
         return message.doc;
     }
-})
+});

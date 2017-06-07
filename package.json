@@ -4,6 +4,7 @@
   "description": "A simple program to organize image collection.",
   "main": "index.js",
   "scripts": {
+    "pretest": "eslint .",
     "test": "mocha"
   },
   "repository": {
@@ -24,12 +25,20 @@
   "devDependencies": {
     "chai": "^4.0.1",
     "chai-subset": "^1.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-mocha": "^4.9.0",
+    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.4.2",
     "mock-fs": "^4.3.0",
     "pouchdb-adapter-memory": "^6.2.0",
     "streamtest": "^1.2.2"
   },
   "dependencies": {
+    "debug": "^2.6.8",
     "glob-parent": "^3.1.0",
     "glob-stream": "^6.1.0",
     "md5-file": "^3.1.1",
