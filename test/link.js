@@ -3,7 +3,7 @@ var expect = require("chai").expect;
 var link = require("../link");
 var StreamTest = require("streamtest");
 var fs = require("fs");
-describe.only("link", () => {
+describe("link", () => {
     beforeEach(() => {
         mock({
             "/exist": "exist",
