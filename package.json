@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "debug": "^2.6.8",
+    "fs-extra": "^3.0.1",
     "glob-parent": "^3.1.0",
     "glob-stream": "^6.1.0",
     "md5-file": "^3.1.1",
