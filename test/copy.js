@@ -3,7 +3,7 @@ var expect = require("chai").expect;
 var copy = require("../copy");
 var StreamTest = require("streamtest");
 var fs = require("fs");
-describe("fs_scan", () => {
+describe("copy", () => {
     beforeEach(() => {
         mock({
             "/source": "source",
