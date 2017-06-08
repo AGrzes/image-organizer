@@ -1,13 +1,13 @@
-var fs = require("fs");
-var fs_op = require("./fs_op");
-module.exports = (target) => fs_op(target, (sourceExist, targetExist, source, destination, cb) => {
-    if (!sourceExist && targetExist) {
-        fs.symlink(destination, source, cb);
-    } else {
-        cb();
-    }
-});
-/*module.exports = (target) => miss.through.obj((message, enc, cb) => {
+var fs = require('fs')
+var fsOp = require('./fs_op')
+module.exports = (target) => fsOp(target, (sourceExist, targetExist, source, destination, cb) => {
+  if (!sourceExist && targetExist) {
+    fs.symlink(destination, source, cb)
+  } else {
+    cb()
+  }
+})
+/* module.exports = (target) => miss.through.obj((message, enc, cb) => {
     var destination = path.join(target, message.target);
     fs.exists(message.file, (sourceExist) => {
         if (sourceExist) {
@@ -27,4 +27,4 @@ module.exports = (target) => fs_op(target, (sourceExist, targetExist, source, de
             });
         }
     });
-});*/
+}); */
