@@ -1,26 +1,9 @@
-var miss = require("mississippi");
-var path = require("path");
-var fs = require("fs");
 var fse = require("fs-extra");
-var debug = require("debug")("copy");
-module.exports = (target) => miss.through.obj((message, enc, cb) => {
-    var destination = path.join(target, message.target);
-    fs.exists(message.file, (sourceExist) => {
-        if (sourceExist) {
-            fs.exists(destination, (exist) => {
-                if (!exist) {
-                    fse.copy(message.file, destination, (err) => {
-                        if (err) {
-                            debug(err);
-                        }
-                        cb(null, message);
-                    });
-                } else {
-                    cb(null, message);
-                }
-            });
-        } else {
-            cb(null, message);
-        }
-    });
+var fs_op = require("./fs_op");
+module.exports = (target) => fs_op(target, (sourceExist, targetExist, source, destination, cb) => {
+    if (sourceExist && !targetExist) {
+        fse.copy(source, destination, cb);
+    } else {
+        cb();
+    }
 });

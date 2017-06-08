@@ -1,8 +1,13 @@
-var miss = require("mississippi");
-var path = require("path");
 var fs = require("fs");
-var debug = require("debug")("link");
-module.exports = (target) => miss.through.obj((message, enc, cb) => {
+var fs_op = require("./fs_op");
+module.exports = (target) => fs_op(target, (sourceExist, targetExist, source, destination, cb) => {
+    if (!sourceExist && targetExist) {
+        fs.symlink(destination, source, cb);
+    } else {
+        cb();
+    }
+});
+/*module.exports = (target) => miss.through.obj((message, enc, cb) => {
     var destination = path.join(target, message.target);
     fs.exists(message.file, (sourceExist) => {
         if (sourceExist) {
@@ -22,4 +27,4 @@ module.exports = (target) => miss.through.obj((message, enc, cb) => {
             });
         }
     });
-});
+});*/
