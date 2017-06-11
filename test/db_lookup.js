@@ -79,6 +79,23 @@ describe('fs_lookup', () => {
           done(error)
         }))
       })
+
+      it('Add file to found document', (done) => {
+        StreamTest[version].fromObjects([{
+          md5: 'md5',
+          file: 'file'
+        }]).pipe(dbLookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            doc: {
+              _id: 'md5',
+              files: {
+                'file': 'PRESENT'
+              }
+            }
+          }])
+          done(error)
+        }))
+      })
     })
   })
 })

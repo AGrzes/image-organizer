@@ -16,10 +16,10 @@ describe('fs_scan', () => {
       it('should list all files under base', function (done) {
         fsScan('/base/**').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.be.deep.equals([{
-            files: ['/base/dir1/file1']
+            file: '/base/dir1/file1'
           },
           {
-            files: ['/base/dir2/file2']
+            file: '/base/dir2/file2'
           }
           ])
           done(error)
