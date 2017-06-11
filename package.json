@@ -33,7 +33,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.4.2",
-    "mock-fs": "^4.3.0",
+    "mock-fs": "^4.4.1",
     "pouchdb-adapter-memory": "^6.2.0",
     "streamtest": "^1.2.2"
   },
