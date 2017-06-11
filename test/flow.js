@@ -6,7 +6,8 @@ var mock = require('mock-fs')
 var db
 var fs = require('fs')
 var exifFunction = (path) => Promise.resolve({
-  path: path
+  path: path,
+  FileModifyDate: '1900-01-01'
 })
 describe('flow', () => {
   beforeEach(() => {
