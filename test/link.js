@@ -17,9 +17,19 @@ describe('link', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'target'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(link('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/source')).to.be.true
           expect(fs.lstatSync('/source').isSymbolicLink()).to.be.true
+          done(error)
+        }))
+      })
+
+      it('Do nothing if disabled', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/source',
+          target: 'target'
+        }]).pipe(link('/', false)).pipe(StreamTest[version].toObjects((error) => {
+          expect(fs.existsSync('/source')).to.be.false
           done(error)
         }))
       })
@@ -28,7 +38,7 @@ describe('link', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'not-exist'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(link('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/source')).to.be.false
           done(error)
         }))
@@ -38,7 +48,7 @@ describe('link', () => {
         StreamTest[version].fromObjects([{
           file: '/exist',
           target: 'target'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(link('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/exist')).to.be.true
           expect(fs.lstatSync('/exist').isSymbolicLink()).to.be.false
           expect(fs.readFileSync('/exist', 'UTF-8')).to.be.equal('exist')

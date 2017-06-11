@@ -2,7 +2,7 @@ var miss = require('mississippi')
 var path = require('path')
 var fs = require('fs')
 var debug = require('debug')('fs_op')
-module.exports = (target, callback) => miss.through.obj((message, enc, cb) => {
+module.exports = (target, enabled, callback) => enabled ? miss.through.obj((message, enc, cb) => {
   var destination = path.join(target, message.target)
   fs.access(message.file, (err) => {
     var sourceExist = !err
@@ -16,4 +16,4 @@ module.exports = (target, callback) => miss.through.obj((message, enc, cb) => {
       })
     })
   })
-})
+}) : miss.through.obj()

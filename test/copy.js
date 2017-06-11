@@ -17,9 +17,19 @@ describe('copy', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'target'
-        }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(copy('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/target')).to.be.true
           expect(fs.readFileSync('/target', 'UTF-8')).to.be.equal('source')
+          done(error)
+        }))
+      })
+
+      it('Do nothing if disabled', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/source',
+          target: 'target'
+        }]).pipe(copy('/', false)).pipe(StreamTest[version].toObjects((error) => {
+          expect(fs.existsSync('/target')).to.be.false
           done(error)
         }))
       })
@@ -28,7 +38,7 @@ describe('copy', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'exist'
-        }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(copy('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/exist')).to.be.true
           expect(fs.readFileSync('/exist', 'UTF-8')).to.be.equal('exist')
           done(error)
@@ -38,7 +48,7 @@ describe('copy', () => {
         StreamTest[version].fromObjects([{
           file: '/not-exist',
           target: 'target'
-        }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(copy('/', true)).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/target')).to.be.false
           done(error)
         }))
