@@ -49,30 +49,12 @@ describe('fs_lookup', () => {
         })
       })
       describe('exif', () => {
-        it('should analyze png', (done) => {
+        it('should analyze file using provided function', (done) => {
           StreamTest[version].fromObjects([{
             file: 'test/data/png'
-          }]).pipe(fsLookup.exif()).pipe(StreamTest[version].toObjects((error, objects) => {
+          }]).pipe(fsLookup.exif((path) => Promise.resolve('DUMMY'))).pipe(StreamTest[version].toObjects((error, objects) => {
             expect(objects).to.containSubset([{
-              exif: {
-                MIMEType: 'image/png',
-                ImageHeight: 1,
-                ImageWidth: 1
-              }
-            }])
-            done(error)
-          }))
-        })
-        it('should analyze jpg', (done) => {
-          StreamTest[version].fromObjects([{
-            file: 'test/data/jpg'
-          }]).pipe(fsLookup.exif()).pipe(StreamTest[version].toObjects((error, objects) => {
-            expect(objects).to.containSubset([{
-              exif: {
-                MIMEType: 'image/jpeg',
-                ImageHeight: 1,
-                ImageWidth: 1
-              }
+              exif: 'DUMMY'
             }])
             done(error)
           }))
