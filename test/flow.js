@@ -17,7 +17,10 @@ describe('flow', () => {
     mock({
       '/source/empty': '',
       '/source/empty2': '',
-      '/source/file1': 'file1'
+      '/source/file1': 'file1',
+      '/source/exist': 'exist',
+      '/target/exist': 'exist'
+
     })
   })
   it('Should add file to db', (done) => {
@@ -45,7 +48,7 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
-  it('Copy source file to target', (done) => {
+  it('Should copy source file to target', (done) => {
     flow({
       paths: ['/source/file1'],
       copy: true,
@@ -61,7 +64,22 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
-
+  it('Should not copy source file when target exist', (done) => {
+    flow({
+      paths: ['/source/exist'],
+      copy: true,
+      target: '/target'
+    }, db, exifFunction).then(() => db.get('035d02e56845b5a4979feabda0824f88')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/exist': 'PRESENT'
+        }
+      })
+      expect(fs.existsSync('/target/1900/01/01/exist')).to.be.true
+      expect(fs.readFileSync('/target/1900/01/01/exist', 'UTF-8')).to.be.equal('exist')
+      done()
+    }).catch(done)
+  })
   afterEach((done) => {
     db.destroy().then(() => done())
     mock.restore()
