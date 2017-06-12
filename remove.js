@@ -1,8 +1,15 @@
 var fse = require('fs-extra')
 var fsOp = require('./fs_op')
-module.exports = (target, enabled) => fsOp(target, enabled, (sourceExist, targetExist, source, destination, cb) => {
+var debug = require('debug')('remove')
+module.exports = (target, enabled) => fsOp(target, enabled, (sourceExist, targetExist, message, destination, cb) => {
   if (sourceExist && targetExist) {
-    fse.unlink(source, cb)
+    debug(`removing ${message.file}`)
+    fse.unlink(message.file, (err) => {
+      if (!err) {
+        message.status = 'ABSENT'
+      }
+      cb(err)
+    })
   } else {
     cb()
   }

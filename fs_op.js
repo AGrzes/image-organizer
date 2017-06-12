@@ -8,7 +8,8 @@ module.exports = (target, enabled, callback) => enabled ? miss.through.obj((mess
     var sourceExist = !err
     fs.access(destination, (err) => {
       var targetExist = !err
-      callback(sourceExist, targetExist, message.file, destination, (err) => {
+      debug(`sourceExist ${sourceExist} targetExist ${targetExist}`)
+      callback(sourceExist, targetExist, message, destination, (err) => {
         if (err) {
           debug(err)
         }
