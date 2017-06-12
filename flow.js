@@ -1,7 +1,8 @@
 var miss = require('mississippi')
 
 var fsScan = require('./fs_scan')
-var fsLookup = require('./fs_lookup')
+var md5Stream = require('./md5_stream')
+var exifStream = require('./exif_stream')
 var dbLookup = require('./db_lookup')
 var dbUpdate = require('./db_update')
 var copy = require('./copy')
@@ -12,8 +13,8 @@ var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction) => {
   return new Promise((resolve, reject) => miss.pipe(
     fsScan(params.paths),
-    fsLookup.md5(),
-    fsLookup.exif(exifFunction),
+    md5Stream(),
+    exifStream(exifFunction),
     dbLookup(db),
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),
