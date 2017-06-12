@@ -8,6 +8,7 @@ var copy = require('./copy')
 var remove = require('./remove')
 var setTarget = require('./set_target')
 var setStatus = require('./set_status')
+var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction) => {
   return new Promise((resolve, reject) => miss.pipe(
     fsScan(params.paths),
@@ -15,8 +16,8 @@ module.exports = (params, db, exifFunction) => {
     fsLookup.exif(exifFunction),
     dbLookup(db),
     setTarget(),
-    copy(params.target, params.copy),
-    remove(params.target, params.remove),
+    enableStream.obj(copy(params.target), params.copy),
+    enableStream.obj(remove(params.target), params.remove),
     setStatus(),
     dbUpdate(db),
     (err) => {

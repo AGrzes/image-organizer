@@ -17,18 +17,8 @@ describe('remove', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'target'
-        }]).pipe(remove('/', true)).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/source')).to.be.false
-          done(error)
-        }))
-      })
-
-      it('Do nothing if disabled', function (done) {
-        StreamTest[version].fromObjects([{
-          file: '/source',
-          target: 'target'
-        }]).pipe(remove('/', false)).pipe(StreamTest[version].toObjects((error) => {
-          expect(fs.existsSync('/source')).to.be.true
           done(error)
         }))
       })
@@ -37,7 +27,7 @@ describe('remove', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'not-exist'
-        }]).pipe(remove('/', true)).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/source')).to.be.true
           done(error)
         }))
