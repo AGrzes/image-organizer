@@ -97,6 +97,21 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
+  it('Should not remove source when remove enabled and target exist', (done) => {
+    flow({
+      paths: ['/source/file1'],
+      remove: true,
+      target: '/target'
+    }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/file1': 'PRESENT'
+        }
+      })
+      expect(fs.existsSync('/source/file1')).to.be.true
+      done()
+    }).catch(done)
+  })
   afterEach((done) => {
     db.destroy().then(() => done())
     mock.restore()
