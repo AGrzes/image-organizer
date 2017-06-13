@@ -17,7 +17,10 @@ describe('link', () => {
         StreamTest[version].fromObjects([{
           file: '/source',
           target: 'target'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            status: 'LINK'
+          }])
           expect(fs.existsSync('/source')).to.be.true
           expect(fs.lstatSync('/source').isSymbolicLink()).to.be.true
           done(error)
@@ -27,8 +30,12 @@ describe('link', () => {
       it('should not link to non existing target', function (done) {
         StreamTest[version].fromObjects([{
           file: '/source',
-          target: 'not-exist'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+          target: 'not-exist',
+          status: 'STATUS'
+        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            status: 'STATUS'
+          }])
           expect(fs.existsSync('/source')).to.be.false
           done(error)
         }))
@@ -37,8 +44,12 @@ describe('link', () => {
       it('should not override source', function (done) {
         StreamTest[version].fromObjects([{
           file: '/exist',
-          target: 'target'
-        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error) => {
+          target: 'target',
+          status: 'STATUS'
+        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            status: 'STATUS'
+          }])
           expect(fs.existsSync('/exist')).to.be.true
           expect(fs.lstatSync('/exist').isSymbolicLink()).to.be.false
           expect(fs.readFileSync('/exist', 'UTF-8')).to.be.equal('exist')
