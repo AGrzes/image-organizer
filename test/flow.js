@@ -5,9 +5,11 @@ PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapred
 var mock = require('mock-fs')
 var db
 var fs = require('fs')
-var exifFunction = (path) => Promise.resolve({
-  path: path,
-  FileModifyDate: '1900-01-01'
+var path = require('path')
+var exifFunction = (filePath) => Promise.resolve({
+  path: filePath,
+  FileModifyDate: '1900-01-01',
+  MIMEType: path.extname(filePath)
 })
 describe('flow', () => {
   beforeEach(() => {
@@ -19,13 +21,15 @@ describe('flow', () => {
       '/source/empty2': '',
       '/source/file1': 'file1',
       '/source/exist': 'source-exist',
-      '/target/1900/01/01/exist': 'exist'
+      '/target/1900/01/01/exist': 'exist',
+      '/source/file.bad': 'bad'
 
     })
   })
   it('Should add file to db', (done) => {
     flow({
-      paths: '/source/empty'
+      paths: '/source/empty',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -37,7 +41,8 @@ describe('flow', () => {
   })
   it('Should file identical files under the same document', (done) => {
     flow({
-      paths: ['/source/empty', '/source/empty2']
+      paths: ['/source/empty', '/source/empty2'],
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -52,7 +57,8 @@ describe('flow', () => {
     flow({
       paths: ['/source/file1'],
       copy: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -68,7 +74,8 @@ describe('flow', () => {
     flow({
       paths: ['/source/exist'],
       copy: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -84,7 +91,8 @@ describe('flow', () => {
     flow({
       paths: ['/source/exist'],
       remove: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -101,7 +109,8 @@ describe('flow', () => {
     flow({
       paths: ['/source/file1'],
       remove: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -117,7 +126,8 @@ describe('flow', () => {
       paths: ['/source/exist'],
       remove: true,
       link: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -135,7 +145,8 @@ describe('flow', () => {
     flow({
       paths: ['/source/exist'],
       link: true,
-      target: '/target'
+      target: '/target',
+      mime: ['**']
     }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
@@ -146,6 +157,18 @@ describe('flow', () => {
       expect(fs.lstatSync('/source/exist').isSymbolicLink()).to.be.false
       expect(fs.existsSync('/target/1900/01/01/exist')).to.be.true
       expect(fs.readFileSync('/target/1900/01/01/exist', 'UTF-8')).to.be.equal('exist')
+      done()
+    }).catch(done)
+  })
+  it('Should filter out specified mime types', (done) => {
+    flow({
+      paths: '/source/file.bad',
+      mime: ['!.bad']
+    }, db, exifFunction).then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
+      expect(doc).to.be.undefined
+      done()
+    }).catch((err) => {
+      expect(err.message).to.be.equal('missing')
       done()
     }).catch(done)
   })

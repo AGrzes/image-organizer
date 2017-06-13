@@ -10,12 +10,14 @@ var remove = require('./remove')
 var link = require('./link')
 var setTarget = require('./set_target')
 var setStatus = require('./set_status')
+var filterImages = require('./filter_images')
 var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction) => {
   return new Promise((resolve, reject) => miss.pipe(
     fsScan(params.paths),
     md5Stream(),
     exifStream(exifFunction),
+    filterImages(params.mime),
     dbLookup(db),
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),
