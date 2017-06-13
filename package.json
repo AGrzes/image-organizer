@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "pretest": "eslint .",
-    "test": "mocha"
+    "test": "nyc --reporter=html --reporter=text mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "chai": "^4.0.1",
     "chai-subset": "^1.5.0",
+    "coveralls": "^2.13.1",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.3.0",
@@ -34,6 +36,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.4.2",
     "mock-fs": "^4.4.1",
+    "nyc": "^11.0.2",
     "pouchdb-adapter-memory": "^6.2.0",
     "streamtest": "^1.2.2"
   },
