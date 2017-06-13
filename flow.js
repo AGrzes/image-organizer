@@ -7,6 +7,7 @@ var dbLookup = require('./db_lookup')
 var dbUpdate = require('./db_update')
 var copy = require('./copy')
 var remove = require('./remove')
+var link = require('./link')
 var setTarget = require('./set_target')
 var setStatus = require('./set_status')
 var enableStream = require('./enable_stream')
@@ -19,6 +20,7 @@ module.exports = (params, db, exifFunction) => {
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),
     enableStream.obj(remove(params.target), params.remove),
+    enableStream.obj(link(params.target), params.link),
     setStatus(),
     dbUpdate(db),
     (err) => {
