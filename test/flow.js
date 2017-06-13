@@ -112,7 +112,7 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
-  it('Should link when target exist and source romoved', (done) => {
+  it('Should link when target exist and source is removed', (done) => {
     flow({
       paths: ['/source/exist'],
       remove: true,
@@ -126,6 +126,24 @@ describe('flow', () => {
       })
       expect(fs.existsSync('/source/exist')).to.be.true
       expect(fs.lstatSync('/source/exist').isSymbolicLink()).to.be.true
+      expect(fs.existsSync('/target/1900/01/01/exist')).to.be.true
+      expect(fs.readFileSync('/target/1900/01/01/exist', 'UTF-8')).to.be.equal('exist')
+      done()
+    }).catch(done)
+  })
+  it('Should not link when target exist and source is not removed', (done) => {
+    flow({
+      paths: ['/source/exist'],
+      link: true,
+      target: '/target'
+    }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/exist': 'PRESENT'
+        }
+      })
+      expect(fs.existsSync('/source/exist')).to.be.true
+      expect(fs.lstatSync('/source/exist').isSymbolicLink()).to.be.false
       expect(fs.existsSync('/target/1900/01/01/exist')).to.be.true
       expect(fs.readFileSync('/target/1900/01/01/exist', 'UTF-8')).to.be.equal('exist')
       done()
