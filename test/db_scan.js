@@ -27,29 +27,34 @@ describe('db_scan', () => {
       it('should list all documents with file under base', function (done) {
         dbScan(db, '/base/**').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
-            files: ['/base/dir1/file1']
-          },
-          {
-            files: ['/base/dir2/file2']
-          }
-          ])
+            doc: {
+              files: ['/base/dir1/file1']
+            }
+          }, {
+            doc: {
+              files: ['/base/dir2/file2']
+            }
+          }])
           expect(objects).not.to.containSubset([{
-            files: ['/base/dir3/file3']
-          }
-          ])
+            doc: {
+              files: ['/base/dir3/file3']
+            }
+          }])
           done(error)
         }))
       })
       it('should use glob to match files', function (done) {
         dbScan(db, '/base/**/file1').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
-            files: ['/base/dir1/file1']
-          }
-          ])
+            doc: {
+              files: ['/base/dir1/file1']
+            }
+          }])
           expect(objects).not.to.containSubset([{
-            files: ['/base/dir2/file2']
-          }
-          ])
+            doc: {
+              files: ['/base/dir2/file2']
+            }
+          }])
           done(error)
         }))
       })

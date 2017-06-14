@@ -16,5 +16,9 @@ module.exports = (db, pattern) => {
     } else {
       cb()
     }
+  }), miss.through.obj((doc, enc, cb) => {
+    cb(null, {
+      doc: doc
+    })
   }))
 }
