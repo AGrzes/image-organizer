@@ -22,7 +22,10 @@ describe('flow', () => {
       '/source/file1': 'file1',
       '/source/exist': 'source-exist',
       '/target/1900/01/01/exist': 'exist',
-      '/source/file.bad': 'bad'
+      '/source/file.bad': 'bad',
+      '/source/link': mock.symlink({
+        path: '/present'
+      })
     })
     Promise.all([db.put({
       _id: 'present',
@@ -41,6 +44,16 @@ describe('flow', () => {
       },
       exif: {
         path: '/source/not-exist',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    }), db.put({
+      _id: 'link',
+      files: {
+        '/source/link': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/link',
         FileModifyDate: '1900-01-01',
         MIMEType: ''
       }
@@ -230,6 +243,21 @@ describe('flow', () => {
       expect(doc).to.containSubset({
         'files': {
           '/source/not-exist': 'ABSENT'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  it('Should confirm that file is link', (done) => {
+    flow({
+      paths: ['/source/link'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('link')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/link': 'LINK'
         }
       })
       done()
