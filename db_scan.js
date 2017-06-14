@@ -15,7 +15,8 @@ module.exports = (db, pattern) => {
     _(doc.files).pickBy((status, file) => minimatch(file, pattern)).forEach((status, file) => {
       this.push({
         doc: doc,
-        file: file
+        file: file,
+        exif: doc.exif
       })
     })
     cb()

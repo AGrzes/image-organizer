@@ -13,7 +13,8 @@ describe('db_scan', () => {
       _id: 'file1',
       files: {
         '/base/dir1/file1': 'PRESENT'
-      }
+      },
+      exif: 'exif'
     })
     db.put({
       _id: 'file2',
@@ -82,6 +83,14 @@ describe('db_scan', () => {
             file: '/another/dir3/file3'
           }, {
             file: '/another/dir3/file4'
+          }])
+          done(error)
+        }))
+      })
+      it('should populate message.exif', function (done) {
+        dbScan(db, '/base/dir1/file1').pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            exif: 'exif'
           }])
           done(error)
         }))
