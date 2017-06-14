@@ -33,7 +33,7 @@ describe('db_scan', () => {
   StreamTest.versions.forEach(function (version) {
     describe('for ' + version + ' streams', function () {
       it('should list all documents with file under base', function (done) {
-        dbScan(db, '/base/**').pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/**']).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
@@ -59,7 +59,7 @@ describe('db_scan', () => {
         }))
       })
       it('should use glob to match files', function (done) {
-        dbScan(db, '/base/**/file1').pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/**/file1']).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
@@ -78,7 +78,7 @@ describe('db_scan', () => {
         }))
       })
       it('should return one message per matching file in document', function (done) {
-        dbScan(db, '/another/**').pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/another/**']).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             file: '/another/dir3/file3'
           }, {
@@ -88,7 +88,7 @@ describe('db_scan', () => {
         }))
       })
       it('should populate message.exif', function (done) {
-        dbScan(db, '/base/dir1/file1').pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/dir1/file1']).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             exif: 'exif'
           }])
