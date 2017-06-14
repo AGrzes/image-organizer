@@ -12,8 +12,8 @@ var exifFunction = (filePath) => Promise.resolve({
   MIMEType: path.extname(filePath)
 })
 describe('flow', () => {
-  beforeEach(() => {
-    db = new PouchDB('flow', {
+  beforeEach((done) => {
+    db = new PouchDB('flow' + new Date().getTime(), {
       adapter: 'memory'
     })
     mock({
@@ -22,13 +22,46 @@ describe('flow', () => {
       '/source/file1': 'file1',
       '/source/exist': 'source-exist',
       '/target/1900/01/01/exist': 'exist',
-      '/source/file.bad': 'bad'
-
+      '/source/file.bad': 'bad',
+      '/source/link': mock.symlink({
+        path: '/present'
+      })
     })
+    Promise.all([db.put({
+      _id: 'present',
+      files: {
+        '/source/file1': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/file1',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    }), db.put({
+      _id: 'absent',
+      files: {
+        '/source/not-exist': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/not-exist',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    }), db.put({
+      _id: 'link',
+      files: {
+        '/source/link': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/link',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    })]).then(() => done())
   })
   it('Should add file to db', (done) => {
     flow({
-      paths: '/source/empty',
+      paths: ['/source/empty'],
       mime: ['**']
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
@@ -162,7 +195,7 @@ describe('flow', () => {
   })
   it('Should filter out specified mime types', (done) => {
     flow({
-      paths: '/source/file.bad',
+      paths: ['/source/file.bad'],
       mime: ['!.bad']
     }, db, exifFunction).then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
       expect(doc).to.be.undefined
@@ -174,7 +207,7 @@ describe('flow', () => {
   })
   it('Should disable file source', (done) => {
     flow({
-      paths: '/source/empty',
+      paths: ['/source/empty'],
       mime: ['**'],
       skipScan: true
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
@@ -185,8 +218,52 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
-  afterEach((done) => {
-    db.destroy().then(() => done())
+  it('Should confirm that file is present', (done) => {
+    flow({
+      paths: ['/source/file1'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('present')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/file1': 'PRESENT'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  it('Should confirm that file is absent', (done) => {
+    flow({
+      paths: ['/source/not-exist'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('absent')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/not-exist': 'ABSENT'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  it('Should confirm that file is link', (done) => {
+    flow({
+      paths: ['/source/link'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('link')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/link': 'LINK'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  afterEach(() => {
     mock.restore()
   })
 })
