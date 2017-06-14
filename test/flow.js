@@ -24,8 +24,8 @@ describe('flow', () => {
       '/target/1900/01/01/exist': 'exist',
       '/source/file.bad': 'bad'
     })
-    db.put({
-      _id: '826e8142e6baabe8af779f5f490cf5f5',
+    Promise.all([db.put({
+      _id: 'present',
       files: {
         '/source/file1': 'UNKNOWN'
       },
@@ -34,7 +34,17 @@ describe('flow', () => {
         FileModifyDate: '1900-01-01',
         MIMEType: ''
       }
-    }).then(() => done())
+    }), db.put({
+      _id: 'absent',
+      files: {
+        '/source/not-exist': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/not-exist',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    })]).then(() => done())
   })
   it('Should add file to db', (done) => {
     flow({
@@ -201,10 +211,25 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+    }, db, exifFunction).then(() => db.get('present')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           '/source/file1': 'PRESENT'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  it('Should confirm that file is absent', (done) => {
+    flow({
+      paths: ['/source/not-exist'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('absent')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/not-exist': 'ABSENT'
         }
       })
       done()
