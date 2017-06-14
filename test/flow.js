@@ -12,8 +12,8 @@ var exifFunction = (filePath) => Promise.resolve({
   MIMEType: path.extname(filePath)
 })
 describe('flow', () => {
-  beforeEach(() => {
-    db = new PouchDB('flow', {
+  beforeEach((done) => {
+    db = new PouchDB('flow' + new Date().getTime(), {
       adapter: 'memory'
     })
     mock({
@@ -23,12 +23,22 @@ describe('flow', () => {
       '/source/exist': 'source-exist',
       '/target/1900/01/01/exist': 'exist',
       '/source/file.bad': 'bad'
-
     })
+    db.put({
+      _id: '826e8142e6baabe8af779f5f490cf5f5',
+      files: {
+        '/source/file1': 'UNKNOWN'
+      },
+      exif: {
+        path: '/source/file1',
+        FileModifyDate: '1900-01-01',
+        MIMEType: ''
+      }
+    }).then(() => done())
   })
   it('Should add file to db', (done) => {
     flow({
-      paths: '/source/empty',
+      paths: ['/source/empty'],
       mime: ['**']
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
@@ -162,7 +172,7 @@ describe('flow', () => {
   })
   it('Should filter out specified mime types', (done) => {
     flow({
-      paths: '/source/file.bad',
+      paths: ['/source/file.bad'],
       mime: ['!.bad']
     }, db, exifFunction).then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
       expect(doc).to.be.undefined
@@ -174,7 +184,7 @@ describe('flow', () => {
   })
   it('Should disable file source', (done) => {
     flow({
-      paths: '/source/empty',
+      paths: ['/source/empty'],
       mime: ['**'],
       skipScan: true
     }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
@@ -185,8 +195,22 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
-  afterEach((done) => {
-    db.destroy().then(() => done())
+  it('Should confirm that file is present', (done) => {
+    flow({
+      paths: ['/source/file1'],
+      mime: ['**'],
+      skipScan: true,
+      update: true
+    }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+      expect(doc).to.containSubset({
+        'files': {
+          '/source/file1': 'PRESENT'
+        }
+      })
+      done()
+    }).catch(done)
+  })
+  afterEach(() => {
     mock.restore()
   })
 })
