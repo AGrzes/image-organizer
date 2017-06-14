@@ -1,7 +1,8 @@
 var gs = require('glob-stream')
 var miss = require('mississippi')
 module.exports = (pattern) => miss.pipeline.obj(gs(pattern, {
-  nodir: true
+  nodir: true,
+  allowEmpty: true
 }), miss.through.obj((chunk, enc, cb) => cb(null, {
   file: chunk.path,
   status: 'PRESENT'
