@@ -172,6 +172,19 @@ describe('flow', () => {
       done()
     }).catch(done)
   })
+  it('Should disable file source', (done) => {
+    flow({
+      paths: '/source/empty',
+      mime: ['**'],
+      skipScan: true
+    }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+      expect(doc).to.be.undefined
+      done()
+    }).catch((err) => {
+      expect(err.message).to.be.equal('missing')
+      done()
+    }).catch(done)
+  })
   afterEach((done) => {
     db.destroy().then(() => done())
     mock.restore()

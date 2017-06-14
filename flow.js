@@ -14,7 +14,7 @@ var filterImages = require('./filter_images')
 var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction) => {
   return new Promise((resolve, reject) => miss.pipe(
-    fsScan(params.paths),
+    enableStream.src.obj(fsScan(params.paths), !params.skipScan),
     md5Stream(),
     exifStream(exifFunction),
     filterImages(params.mime),
