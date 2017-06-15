@@ -1,4 +1,4 @@
-# Image Organizer [![Build Status](https://travis-ci.org/AGrzes/image-organizer.svg?branch=master)](https://travis-ci.org/AGrzes/image-organizer) [![Coverage Status](https://coveralls.io/repos/github/AGrzes/image-organizer/badge.svg?branch=develop)](https://coveralls.io/github/AGrzes/image-organizer?branch=develop)
+# Image Organizer [![Build Status](https://travis-ci.org/AGrzes/image-organizer.svg?branch=develop)](https://travis-ci.org/AGrzes/image-organizer) [![Coverage Status](https://coveralls.io/repos/github/AGrzes/image-organizer/badge.svg?branch=develop)](https://coveralls.io/github/AGrzes/image-organizer?branch=develop)
 Simple tool for for image indexing and organization.
 
 The program scans the filesystem for image files and stores information about found images in CouchDB database. It identifies duplicate images using md5 sum and groups them together.

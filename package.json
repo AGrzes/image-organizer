@@ -1,6 +1,6 @@
 {
   "name": "image-organizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple program to organize image collection.",
   "main": "index.js",
   "bin": "./index.js",
