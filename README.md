@@ -11,6 +11,9 @@ It can also
 ## WARNING
 This is still work in progress, use  at own risk.
 
+## Dependencies
+Image organizer requires [exiftool](http://www.sno.phy.queensu.ca/~phil/exiftool/) to analyze images.
+
 ## Usage
 Install
 ```
