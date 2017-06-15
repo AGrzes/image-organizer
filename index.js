@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var parameters = require('./parameters')()
 var PouchDB = require('pouchdb-core')
 var os = require('os')
