@@ -1,15 +1,15 @@
 # Image Organizer [![Build Status](https://travis-ci.org/AGrzes/image-organizer.svg?branch=master)](https://travis-ci.org/AGrzes/image-organizer) [![Coverage Status](https://coveralls.io/repos/github/AGrzes/image-organizer/badge.svg?branch=develop)](https://coveralls.io/github/AGrzes/image-organizer?branch=develop)
 Simple tool for for image indexing and organization.
 
-The progrms scans the filesystem for image files and stores information about found images in couchdb database. It identifies duplicate images using md5 sum and groups them together.
+The program scans the filesystem for image files and stores information about found images in CouchDB database. It identifies duplicate images using md5 sum and groups them together.
 
 It can also 
-* Copy files to target directory, organized by image createion date
+* Copy files to target directory, organized by image creation date
 * Remove source file - provided copy exist
 * Place a link to target directory in place where source file was
 
 ## WARNING
-This is still woork in progress, use  at own risk.
+This is still work in progress, use  at own risk.
 
 ## Usage
 Install
