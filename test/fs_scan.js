@@ -14,15 +14,17 @@ describe('fs_scan', () => {
   StreamTest.versions.forEach(function (version) {
     describe('for ' + version + ' streams', function () {
       it('should list all files under base', function (done) {
-        fsScan('/base/**').pipe(StreamTest[version].toObjects((error, objects) => {
+        fsScan('/base/**', 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([
             {
               file: '/base/dir1/file1',
-              status: 'PRESENT'
+              status: 'PRESENT',
+              machine: 'machine'
             },
             {
               file: '/base/dir2/file2',
-              status: 'PRESENT'
+              status: 'PRESENT',
+              machine: 'machine'
             }
           ])
           done(error)
