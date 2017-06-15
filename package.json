@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A simple program to organize image collection.",
   "main": "index.js",
+  "bin": "./index.js",
   "scripts": {
     "pretest": "eslint .",
     "test": "nyc --reporter=html --reporter=text mocha",
@@ -38,6 +39,7 @@
     "mock-fs": "^4.4.1",
     "nyc": "^11.0.2",
     "pouchdb-adapter-memory": "^6.2.0",
+    "pouchdb-server": "^2.3.7",
     "streamtest": "^1.2.2"
   },
   "dependencies": {
@@ -53,6 +55,7 @@
     "moment": "^2.18.1",
     "multistream": "^2.1.0",
     "ouch-stream": "^1.0.0",
+    "pouchdb-adapter-http": "^6.2.0",
     "pouchdb-core": "^6.2.0",
     "pouchdb-mapreduce": "^6.2.0",
     "simple-exiftool": "^1.1.0",
