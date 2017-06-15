@@ -3,7 +3,7 @@ var moment = require('moment')
 var path = require('path')
 var debug = require('debug')('set_target')
 module.exports = () => miss.through.obj((message, encoding, cb) => {
-  var date = moment(message.exif.FileModifyDate)
+  var date = moment(message.exif.FileModifyDate, 'YYYY:MM:DD HH:MM:SS')
   message.target = path.join(date.format('YYYY'), date.format('MM'), date.format('DD'), path.basename(message.file))
   debug(message.target)
   cb(null, message)
