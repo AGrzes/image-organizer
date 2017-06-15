@@ -12,46 +12,67 @@ describe('db_scan', () => {
     db.put({
       _id: 'file1',
       files: {
-        '/base/dir1/file1': 'PRESENT'
+        'machine': {
+          '/base/dir1/file1': 'PRESENT'
+        }
       },
       exif: 'exif'
     })
     db.put({
       _id: 'file2',
       files: {
-        '/base/dir2/file2': 'PRESENT'
+        'machine': {
+          '/base/dir2/file2': 'PRESENT'
+        }
       }
     })
     db.put({
       _id: 'file3',
       files: {
-        '/another/dir3/file3': 'PRESENT',
-        '/another/dir3/file4': 'PRESENT'
+        'machine': {
+          '/another/dir3/file3': 'PRESENT',
+          '/another/dir3/file4': 'PRESENT'
+        }
       }
+    })
+    db.put({
+      _id: 'another-machine-file1',
+      files: {
+        'another-machine': {
+          '/base/dir1/file1': 'PRESENT'
+        }
+      },
+      exif: 'exif'
     })
   })
   StreamTest.versions.forEach(function (version) {
     describe('for ' + version + ' streams', function () {
       it('should list all documents with file under base', function (done) {
-        dbScan(db, ['/base/**']).pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/**'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
-                '/base/dir1/file1': 'PRESENT'
+                machine: {
+                  '/base/dir1/file1': 'PRESENT'
+                }
               }
             }
           }, {
             doc: {
               files: {
-                '/base/dir2/file2': 'PRESENT'
+                machine: {
+                  '/base/dir2/file2': 'PRESENT'
+                }
               }
             }
           }])
           expect(objects).not.to.containSubset([{
             doc: {
               files: {
-                '/another/dir3/file3': 'PRESENT',
-                '/another/dir3/file4': 'PRESENT'
+                machine: {
+                  '/another/dir3/file3': 'PRESENT',
+                  '/another/dir3/file4': 'PRESENT'
+                }
               }
             }
           }])
@@ -59,18 +80,22 @@ describe('db_scan', () => {
         }))
       })
       it('should use glob to match files', function (done) {
-        dbScan(db, ['/base/**/file1']).pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/**/file1'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
-                '/base/dir1/file1': 'PRESENT'
+                machine: {
+                  '/base/dir1/file1': 'PRESENT'
+                }
               }
             }
           }])
           expect(objects).not.to.containSubset([{
             doc: {
               files: {
-                '/base/dir2/file2': 'PRESENT'
+                machine: {
+                  '/base/dir2/file2': 'PRESENT'
+                }
               }
             }
           }])
@@ -78,7 +103,7 @@ describe('db_scan', () => {
         }))
       })
       it('should return one message per matching file in document', function (done) {
-        dbScan(db, ['/another/**']).pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/another/**'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             file: '/another/dir3/file3'
           }, {
@@ -88,9 +113,40 @@ describe('db_scan', () => {
         }))
       })
       it('should populate message.exif', function (done) {
-        dbScan(db, ['/base/dir1/file1']).pipe(StreamTest[version].toObjects((error, objects) => {
+        dbScan(db, ['/base/dir1/file1'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             exif: 'exif'
+          }])
+          done(error)
+        }))
+      })
+      it('should populate message.machine', function (done) {
+        dbScan(db, ['/base/dir1/file1'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            machine: 'machine'
+          }])
+          done(error)
+        }))
+      })
+      it('should find file for specific machine', function (done) {
+        dbScan(db, ['/base/dir1/file1'], 'another-machine').pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            doc: {
+              files: {
+                'another-machine': {
+                  '/base/dir1/file1': 'PRESENT'
+                }
+              }
+            }
+          }])
+          expect(objects).not.to.containSubset([{
+            doc: {
+              files: {
+                'machine': {
+                  '/base/dir1/file1': 'PRESENT'
+                }
+              }
+            }
           }])
           done(error)
         }))

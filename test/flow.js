@@ -30,7 +30,9 @@ describe('flow', () => {
     Promise.all([db.put({
       _id: 'present',
       files: {
-        '/source/file1': 'UNKNOWN'
+        machine: {
+          '/source/file1': 'UNKNOWN'
+        }
       },
       exif: {
         path: '/source/file1',
@@ -40,7 +42,9 @@ describe('flow', () => {
     }), db.put({
       _id: 'absent',
       files: {
-        '/source/not-exist': 'UNKNOWN'
+        machine: {
+          '/source/not-exist': 'UNKNOWN'
+        }
       },
       exif: {
         path: '/source/not-exist',
@@ -50,7 +54,9 @@ describe('flow', () => {
     }), db.put({
       _id: 'link',
       files: {
-        '/source/link': 'UNKNOWN'
+        machine: {
+          '/source/link': 'UNKNOWN'
+        }
       },
       exif: {
         path: '/source/link',
@@ -63,10 +69,12 @@ describe('flow', () => {
     flow({
       paths: ['/source/empty'],
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/empty': 'PRESENT'
+          machine: {
+            '/source/empty': 'PRESENT'
+          }
         }
       })
       done()
@@ -76,11 +84,13 @@ describe('flow', () => {
     flow({
       paths: ['/source/empty', '/source/empty2'],
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/empty': 'PRESENT',
-          '/source/empty2': 'PRESENT'
+          machine: {
+            '/source/empty': 'PRESENT',
+            '/source/empty2': 'PRESENT'
+          }
         }
       })
       done()
@@ -92,10 +102,12 @@ describe('flow', () => {
       copy: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/file1': 'PRESENT'
+          machine: {
+            '/source/file1': 'PRESENT'
+          }
         }
       })
       expect(fs.existsSync('/target/1900/01/01/file1')).to.be.true
@@ -109,10 +121,12 @@ describe('flow', () => {
       copy: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/exist': 'PRESENT'
+          machine: {
+            '/source/exist': 'PRESENT'
+          }
         }
       })
       expect(fs.existsSync('/target/1900/01/01/exist')).to.be.true
@@ -126,10 +140,12 @@ describe('flow', () => {
       remove: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/exist': 'ABSENT'
+          machine: {
+            '/source/exist': 'ABSENT'
+          }
         }
       })
       expect(fs.existsSync('/source/exist')).to.be.false
@@ -144,10 +160,12 @@ describe('flow', () => {
       remove: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/file1': 'PRESENT'
+          machine: {
+            '/source/file1': 'PRESENT'
+          }
         }
       })
       expect(fs.existsSync('/source/file1')).to.be.true
@@ -161,10 +179,12 @@ describe('flow', () => {
       link: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/exist': 'LINK'
+          machine: {
+            '/source/exist': 'LINK'
+          }
         }
       })
       expect(fs.existsSync('/source/exist')).to.be.true
@@ -180,10 +200,12 @@ describe('flow', () => {
       link: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/exist': 'PRESENT'
+          machine: {
+            '/source/exist': 'PRESENT'
+          }
         }
       })
       expect(fs.existsSync('/source/exist')).to.be.true
@@ -197,7 +219,7 @@ describe('flow', () => {
     flow({
       paths: ['/source/file.bad'],
       mime: ['!.bad']
-    }, db, exifFunction).then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
       expect(doc).to.be.undefined
       done()
     }).catch((err) => {
@@ -210,7 +232,7 @@ describe('flow', () => {
       paths: ['/source/empty'],
       mime: ['**'],
       skipScan: true
-    }, db, exifFunction).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.be.undefined
       done()
     }).catch((err) => {
@@ -224,10 +246,12 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction).then(() => db.get('present')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('present')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/file1': 'PRESENT'
+          machine: {
+            '/source/file1': 'PRESENT'
+          }
         }
       })
       done()
@@ -239,10 +263,12 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction).then(() => db.get('absent')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('absent')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/not-exist': 'ABSENT'
+          machine: {
+            '/source/not-exist': 'ABSENT'
+          }
         }
       })
       done()
@@ -254,10 +280,12 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction).then(() => db.get('link')).then((doc) => {
+    }, db, exifFunction, 'machine').then(() => db.get('link')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
-          '/source/link': 'LINK'
+          machine: {
+            '/source/link': 'LINK'
+          }
         }
       })
       done()

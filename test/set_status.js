@@ -10,12 +10,15 @@ describe('set_target', () => {
           doc: {
             files: {}
           },
-          status: 'status'
+          status: 'status',
+          machine: 'machine'
         }]).pipe(setStatus()).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
-                file: 'status'
+                machine: {
+                  file: 'status'
+                }
               }
             }
           }])
