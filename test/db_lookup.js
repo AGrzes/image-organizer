@@ -6,7 +6,7 @@ PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapred
 var db = new PouchDB('db_lookup', {
   adapter: 'memory'
 })
-describe('fs_lookup', () => {
+describe('db_lookup', () => {
   before(() => {
     db.put({
       _id: 'md5'
@@ -54,12 +54,15 @@ describe('fs_lookup', () => {
       it('should initialize files if not found', (done) => {
         StreamTest[version].fromObjects([{
           md5: '!md5',
-          file: 'file'
+          file: 'file',
+          machine: 'machine'
         }]).pipe(dbLookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               files: {
-                file: 'PRESENT'
+                machine: {
+                  file: 'PRESENT'
+                }
               }
             }
           }])
@@ -83,13 +86,16 @@ describe('fs_lookup', () => {
       it('Add file to found document', (done) => {
         StreamTest[version].fromObjects([{
           md5: 'md5',
-          file: 'file'
+          file: 'file',
+          machine: 'machine'
         }]).pipe(dbLookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{
             doc: {
               _id: 'md5',
               files: {
-                'file': 'PRESENT'
+                machine: {
+                  file: 'PRESENT'
+                }
               }
             }
           }])
