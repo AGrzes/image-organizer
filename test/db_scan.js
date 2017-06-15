@@ -120,6 +120,14 @@ describe('db_scan', () => {
           done(error)
         }))
       })
+      it('should populate message.machine', function (done) {
+        dbScan(db, ['/base/dir1/file1'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            machine: 'machine'
+          }])
+          done(error)
+        }))
+      })
       it('should find file for specific machine', function (done) {
         dbScan(db, ['/base/dir1/file1'], 'another-machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{

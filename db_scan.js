@@ -16,7 +16,8 @@ module.exports = (db, patterns, machine) => {
       this.push({
         doc: doc,
         file: file,
-        exif: doc.exif
+        exif: doc.exif,
+        machine: machine
       })
     })
     cb()
