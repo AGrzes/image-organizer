@@ -14,6 +14,14 @@ describe('fs_lookup', () => {
           done(error)
         }))
       })
+      it('should not pass the message if provided function failed', (done) => {
+        StreamTest[version].fromObjects([{
+          file: 'test/data/png'
+        }]).pipe(exifStream((path) => Promise.reject(new Error()))).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{}])
+          done(error)
+        }))
+      })
     })
   })
 })
