@@ -13,7 +13,7 @@ module.exports = (target, callback) => miss.through.obj((message, enc, cb) => {
         if (err) {
           debug(err)
         }
-        cb(err, message)
+        cb(null, message)
       })
     })
   })

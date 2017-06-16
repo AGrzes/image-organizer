@@ -5,7 +5,7 @@ module.exports = (db) => miss.through.obj((message, enc, cb) => db.get(message.m
   doc.files[message.machine] = doc.files[message.machine] || {}
   doc.files[message.machine][message.file] = 'PRESENT'
   message.doc = doc
-}).catch((error) => {
+}).then(() => cb(null, message)).catch((error) => {
   if (error.name === 'not_found') {
     message.doc = {
       _id: message.md5,
@@ -16,7 +16,9 @@ module.exports = (db) => miss.through.obj((message, enc, cb) => db.get(message.m
         }
       }
     }
+    cb(null, message)
   } else {
     debug(error)
+    cb()
   }
-}).then(() => cb(null, message)))
+}))

@@ -18,4 +18,10 @@ describe('exif', () => {
       done()
     }).catch(done)
   })
+  it('Should fail on non existing file', (done) => {
+    exifFunction('test/data/not-exist').catch(() => 'fail').then((exif) => {
+      expect(exif).to.be.equal('fail')
+      done()
+    }).catch(done)
+  })
 })
