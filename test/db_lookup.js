@@ -103,11 +103,9 @@ describe('db_lookup', () => {
         }))
       })
 
-      it('should swallow error when md5 not provided', (done) => {
+      it('should not pass message when md5 not provided', (done) => {
         StreamTest[version].fromObjects([{}]).pipe(dbLookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
-          expect(objects).not.to.containSubset([{
-            doc: {}
-          }])
+          expect(objects).not.to.containSubset([{}])
           done(error)
         }))
       })
