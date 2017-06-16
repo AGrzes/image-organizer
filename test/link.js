@@ -7,7 +7,12 @@ describe('link', () => {
   beforeEach(() => {
     mock({
       '/exist': 'exist',
-      '/target': 'target'
+      '/target': 'target',
+      '/protected': mock.directory({
+        uid: 0,
+        gid: 0,
+        mode: 0
+      })
     })
   })
   afterEach(() => mock.restore())
@@ -23,6 +28,19 @@ describe('link', () => {
           }])
           expect(fs.existsSync('/source')).to.be.true
           expect(fs.lstatSync('/source').isSymbolicLink()).to.be.true
+          done(error)
+        }))
+      })
+
+      it('should not set status when link failed', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/protected/source',
+          target: 'target'
+        }]).pipe(link('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{
+            status: 'LINK'
+          }])
+          expect(fs.existsSync('/protected/source')).to.be.false
           done(error)
         }))
       })

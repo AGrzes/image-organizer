@@ -6,7 +6,7 @@ module.exports = (target) => fsOp(target, (sourceExist, targetExist, message, de
       if (!err) {
         message.status = 'LINK'
       }
-      cb(err)
+      cb()
     })
   } else {
     cb()
