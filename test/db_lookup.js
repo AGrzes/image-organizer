@@ -83,7 +83,7 @@ describe('db_lookup', () => {
         }))
       })
 
-      it('Add file to found document', (done) => {
+      it('should add file to found document', (done) => {
         StreamTest[version].fromObjects([{
           md5: 'md5',
           file: 'file',
@@ -98,6 +98,15 @@ describe('db_lookup', () => {
                 }
               }
             }
+          }])
+          done(error)
+        }))
+      })
+
+      it('should swallow error when md5 not provided', (done) => {
+        StreamTest[version].fromObjects([{}]).pipe(dbLookup(db)).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{
+            doc: {}
           }])
           done(error)
         }))
