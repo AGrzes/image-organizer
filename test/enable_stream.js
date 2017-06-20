@@ -44,6 +44,13 @@ describe('enable_stream', () => {
           done(error)
         }))
       })
+      it('Should enable lazy source object stream ', (done) => {
+        enableStream.src.obj(() => StreamTest[version].fromObjects(['a']), true).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.be.deep.equals(['a'])
+          done(error)
+        }))
+      })
+
       it('Should disable source object stream ', (done) => {
         enableStream.src.obj(StreamTest[version].fromObjects(['a']), false).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.be.deep.equals([])
@@ -56,6 +63,14 @@ describe('enable_stream', () => {
           done(error)
         }))
       })
+
+      it('Should enable lazy source stream ', (done) => {
+        enableStream.src(() => StreamTest[version].fromChunks(['a']), true).pipe(StreamTest[version].toText((error, text) => {
+          expect(text).to.be.equals('a')
+          done(error)
+        }))
+      })
+
       it('Should disable source stream ', (done) => {
         enableStream.src(StreamTest[version].fromChunks(['a']), false).pipe(StreamTest[version].toText((error, text) => {
           expect(text).to.be.equals('')
