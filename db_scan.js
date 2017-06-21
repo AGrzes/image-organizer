@@ -23,12 +23,13 @@ module.exports = (db, patterns, machine) => {
     cb()
   }))
 }
-var viewDesign = {
-  '_id': '_design/db_scan',
-  'language': 'javascript',
-  'views': {
-    'db_scan': {
-      'map': `
+module.exports.initialize = (db) => {
+  var viewDesign = {
+    '_id': '_design/db_scan',
+    'language': 'javascript',
+    'views': {
+      'db_scan': {
+        'map': `
   function (doc) {
     for (machine in doc.files) {
       for (filePath in doc.files[machine]) {
@@ -41,10 +42,9 @@ var viewDesign = {
       }
     }
   }`
+      }
     }
   }
-}
-module.exports.initialize = (db) => {
   return db.put(viewDesign).catch((error) => {
     if (error.name === 'conflict') {
       return db.get(viewDesign._id).then((existing) => {
