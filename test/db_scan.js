@@ -3,13 +3,14 @@ var dbScan = require('../db_scan')
 var StreamTest = require('streamtest')
 var PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapreduce'))
-var db = new PouchDB('db_scan', {
-  adapter: 'memory'
-})
+var db
 
 describe('db_scan', () => {
-  before(() => {
-    db.put({
+  beforeEach((done) => {
+    db = new PouchDB('db_scan_' + new Date().getTime(), {
+      adapter: 'memory'
+    })
+    Promise.all([db.put({
       _id: 'file1',
       files: {
         'machine': {
@@ -17,16 +18,14 @@ describe('db_scan', () => {
         }
       },
       exif: 'exif'
-    })
-    db.put({
+    }), db.put({
       _id: 'file2',
       files: {
         'machine': {
           '/base/dir2/file2': 'PRESENT'
         }
       }
-    })
-    db.put({
+    }), db.put({
       _id: 'file3',
       files: {
         'machine': {
@@ -34,8 +33,7 @@ describe('db_scan', () => {
           '/another/dir3/file4': 'PRESENT'
         }
       }
-    })
-    db.put({
+    }), db.put({
       _id: 'another-machine-file1',
       files: {
         'another-machine': {
@@ -43,7 +41,7 @@ describe('db_scan', () => {
         }
       },
       exif: 'exif'
-    })
+    })]).then(() => done()).catch(done)
   })
   StreamTest.versions.forEach(function (version) {
     describe('for ' + version + ' streams', function () {
@@ -151,6 +149,25 @@ describe('db_scan', () => {
           done(error)
         }))
       })
+    })
+  })
+
+  describe('initialize', function () {
+    it('should initialize db_scan view', function (done) {
+      dbScan.initialize(db).then(() => db.get('_design/db_scan')).then((view) => {
+        expect(view).to.have.nested.property('views.db_scan.map')
+        expect(view.views.db_scan.map).to.have.string('function')
+        done()
+      }).catch(done)
+    })
+    it('should reinitialize db_scan view', function (done) {
+      db.put({
+        _id: '_design/db_scan'
+      }).then(() => dbScan.initialize(db)).then(() => db.get('_design/db_scan')).then((view) => {
+        expect(view).to.have.nested.property('views.db_scan.map')
+        expect(view.views.db_scan.map).to.have.string('function')
+        done()
+      }).catch(done)
     })
   })
 })

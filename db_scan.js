@@ -23,3 +23,36 @@ module.exports = (db, patterns, machine) => {
     cb()
   }))
 }
+var viewDesign = {
+  '_id': '_design/db_scan',
+  'language': 'javascript',
+  'views': {
+    'db_scan': {
+      'map': `
+  function (doc) {
+    for (machine in doc.files) {
+      for (filePath in doc.files[machine]) {
+        var segments = filePath.split('/')
+        var key = [machine]
+        for (segment in segments) {
+          key.push(segment)
+          emit(key.slice(0))
+        }
+      }
+    }
+  }`
+    }
+  }
+}
+module.exports.initialize = (db) => {
+  return db.put(viewDesign).catch((error) => {
+    if (error.name === 'conflict') {
+      return db.get(viewDesign._id).then((existing) => {
+        viewDesign._rev = existing._rev
+        return db.put(viewDesign)
+      })
+    } else {
+      throw error
+    }
+  })
+}
