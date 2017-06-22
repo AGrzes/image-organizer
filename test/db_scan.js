@@ -45,6 +45,9 @@ describe('db_scan', () => {
   })
   StreamTest.versions.forEach(function (version) {
     describe('for ' + version + ' streams', function () {
+      beforeEach((done) => {
+        dbScan.initialize(db).then(() => done()).catch(done)
+      })
       it('should list all documents with file under base', function (done) {
         dbScan(db, ['/base/**'], 'machine').pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{

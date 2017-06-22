@@ -2,16 +2,15 @@ var globParent = require('glob-parent')
 var Ouch = require('ouch-stream')
 var miss = require('mississippi')
 var minimatch = require('minimatch')
+var MultiStream = require('multistream')
 var _ = require('lodash')
 module.exports = (db, patterns, machine) => {
-  var bases = patterns.map(globParent)
-  return miss.pipeline.obj(new Ouch(db).view((doc, emit) => {
-    if (_.some(doc.files[machine], (status, file) => bases.some((base) => file.startsWith(base)))) {
-      emit(doc._id)
-    }
-  }, {
-    include_docs: true
-  }), miss.through.obj((chunk, enc, cb) => cb(null, chunk.doc)), miss.through.obj(function (doc, enc, cb) {
+  return miss.pipeline.obj(MultiStream.obj(patterns.map(globParent).map((base) => new Ouch(db).view('db_scan/db_scan', {
+    include_docs: true,
+    limit_skip: true,
+    startkey: [machine, base],
+    endkey: [machine, base + '\uFFFF']
+  }))), miss.through.obj((chunk, enc, cb) => cb(null, chunk.doc)), miss.through.obj(function (doc, enc, cb) {
     _(doc.files[machine]).pickBy((status, file) => patterns.some((pattern) => minimatch(file, pattern))).forEach((status, file) => {
       this.push({
         doc: doc,
@@ -31,13 +30,10 @@ module.exports.initialize = (db) => {
       'db_scan': {
         'map': `
   function (doc) {
-    for (machine in doc.files) {
-      for (filePath in doc.files[machine]) {
-        var segments = filePath.split('/')
-        var key = [machine]
-        for (segment in segments) {
-          key.push(segment)
-          emit(key.slice(0))
+    if (doc.files) {
+      for (var machine in doc.files) {
+        for (var filePath in doc.files[machine]) {
+          emit([machine,filePath])
         }
       }
     }
