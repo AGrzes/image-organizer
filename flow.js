@@ -16,13 +16,14 @@ var setStatus = require('./set_status')
 var filterImages = require('./filter_images')
 var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction, machine) => {
+  var initialize = Promise.all([dbScan.initialize(db)])
   var fsPipeline = miss.pipeline.obj(enableStream.src.obj(() => fsScan(params.paths, machine), !params.skipScan),
     md5Stream(),
     exifStream(exifFunction),
     filterImages(params.mime),
     dbLookup(db))
   var dbPipeline = miss.pipeline.obj(enableStream.src.obj(() => dbScan(db, params.paths, machine), params.update), fsLookup())
-  return new Promise((resolve, reject) => miss.pipe(
+  return initialize.then(() => new Promise((resolve, reject) => miss.pipe(
     MultiStream.obj([fsPipeline, dbPipeline]),
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),
@@ -36,5 +37,5 @@ module.exports = (params, db, exifFunction, machine) => {
       } else {
         resolve()
       }
-    }))
+    })))
 }

@@ -74,4 +74,4 @@ describe('index', () => {
       }).catch(done)
     })
   })
-})
+}).timeout(5000)
