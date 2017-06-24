@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var exifFunction = require('../exif')
+var exifFunction = require('../../src/file/exif')
 describe('exif', () => {
   it('Should recognize jpg', (done) => {
     exifFunction('test/data/jpg').then((exif) => {

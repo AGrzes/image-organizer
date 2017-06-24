@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var enableStream = require('../enable_stream')
+var enableStream = require('../../src/control/enable_stream')
 var miss = require('mississippi')
 var StreamTest = require('streamtest')
 describe('enable_stream', () => {

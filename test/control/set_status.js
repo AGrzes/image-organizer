@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var setStatus = require('../set_status')
+var setStatus = require('../../src/control/set_status')
 var StreamTest = require('streamtest')
 describe('set_target', () => {
   StreamTest.versions.forEach(function (version) {

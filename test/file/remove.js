@@ -1,6 +1,6 @@
 var mock = require('mock-fs')
 var expect = require('chai').expect
-var remove = require('../remove')
+var remove = require('../../src/file/remove')
 var StreamTest = require('streamtest')
 var fs = require('fs')
 describe('remove', () => {

@@ -1,5 +1,5 @@
 var expect = require('chai').use(require('chai-subset')).expect
-var flow = require('../flow')
+var flow = require('../../src/control/flow')
 var PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapreduce'))
 var mock = require('mock-fs')

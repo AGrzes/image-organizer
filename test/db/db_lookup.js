@@ -1,4 +1,4 @@
-var dbLookup = require('../db_lookup')
+var dbLookup = require('../../src/db/db_lookup')
 var expect = require('chai').use(require('chai-subset')).expect
 var StreamTest = require('streamtest')
 var PouchDB = require('pouchdb-core')

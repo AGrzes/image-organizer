@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var filterImages = require('../filter_images')
+var filterImages = require('../../src/control/filter_images')
 var StreamTest = require('streamtest')
 describe('filter_images', () => {
   StreamTest.versions.forEach(function (version) {

@@ -7,7 +7,7 @@ var path = require('path')
 PouchDB.plugin(require('pouchdb-adapter-http'))
 
 var waitForDb = (db) => new Promise((resolve, reject) => {
-  var counter = 20
+  var counter = 30
   var wait = () => {
     db.allDocs().then(() => resolve(db)).catch((err) => {
       if (err.code === 'ECONNREFUSED' && counter-- > 0) {
@@ -65,7 +65,7 @@ var copyDirectory = (src, dst) => new Promise((resolve, reject) => {
 describe('index', function () {
   var pouchServer
   before(() => {
-    pouchServer = childProcess.spawn('node_modules/.bin/pouchdb-server', ['--in-memory', '--port', '3000', '--config', './pouch-server-config.json'])
+    pouchServer = childProcess.spawn(path.join(__dirname, '..', '..', 'node_modules/.bin/pouchdb-server'), ['--in-memory', '--port', '3000', '--config', path.join(__dirname, 'pouch-server-config.json')])
   })
   after((done) => {
     pouchServer.kill()
@@ -84,20 +84,20 @@ describe('index', function () {
     dst = path.join(tmpdir, 'dst')
     fs.mkdirSync(dst)
     db = new PouchDB('http://localhost:3000/test_db')
-    Promise.all([copyDirectory('test/src', src), waitForDb(db).then(insertDocs(db, src, machine))]).then(() => done()).catch(done)
+    Promise.all([copyDirectory(path.join(__dirname, 'src'), src), waitForDb(db).then(insertDocs(db, src, machine))]).then(() => done()).catch(done)
   })
   afterEach((done) => {
     db.destroy().then(() => done()).catch(done)
   })
   it('Should fail with no arguments', (done) => {
-    childProcess.fork('./index', []).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), []).on('exit', (code) => {
       expect(code).not.to.be.equal(0)
       done()
     })
   })
 
   it('Should scan source directory', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
       db.allDocs({
         include_docs: true
       }).then((docs) => {
@@ -118,7 +118,7 @@ describe('index', function () {
   })
 
   it('Should detect duplicates', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
       db.allDocs({
         include_docs: true
       }).then((docs) => {
@@ -140,14 +140,14 @@ describe('index', function () {
   })
 
   it('Should copy source files', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c']).on('exit', (code) => {
       expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
       done()
     })
   })
 
   it('Should remove source files after copy', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r']).on('exit', (code) => {
       expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
       expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.false
       done()
@@ -155,7 +155,7 @@ describe('index', function () {
   })
 
   it('Should link source files after remove', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l']).on('exit', (code) => {
       expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
       expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
       expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
@@ -165,7 +165,7 @@ describe('index', function () {
   })
 
   it('Should link source files after remove db driven', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l', '-x', '-u']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l', '-x', '-u']).on('exit', (code) => {
       expect(fs.existsSync(path.join(dst, '1234', '12', '21', 'file1.jpg'))).to.be.true
       expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
       expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
@@ -175,7 +175,7 @@ describe('index', function () {
   })
 
   it('Should detect absent file', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
       db.allDocs({
         include_docs: true
       }).then((docs) => {
@@ -197,7 +197,7 @@ describe('index', function () {
   })
 
   it('Should detect links', (done) => {
-    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
       db.allDocs({
         include_docs: true
       }).then((docs) => {

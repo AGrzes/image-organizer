@@ -1,4 +1,4 @@
-var md5Stream = require('../md5_stream')
+var md5Stream = require('../../src/file/md5_stream')
 var expect = require('chai').use(require('chai-subset')).expect
 var StreamTest = require('streamtest')
 describe('md5_stream', () => {
