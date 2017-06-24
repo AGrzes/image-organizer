@@ -30,6 +30,16 @@ var insertDocs = (db, src, machine) => () => Promise.all([db.put({
   exif: {
     FileModifyDate: '1234-12-21'
   }
+}), db.put({
+  _id: 'link',
+  files: {
+    [machine]: {
+      [path.join(src, 'link')]: 'PRESENT'
+    }
+  },
+  exif: {
+    FileModifyDate: '1234-12-21'
+  }
 })])
 
 var copyDirectory = (src, dst) => new Promise((resolve, reject) => {
@@ -108,6 +118,28 @@ describe('index', function () {
               files: {
                 [machine]: {
                   [path.join(src, 'absent')]: 'ABSENT'
+                }
+              }
+            }
+          }]
+        })
+        done()
+      }).catch(done)
+    })
+  })
+
+  it('Should detect links', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
+      db.allDocs({
+        include_docs: true
+      }).then((docs) => {
+        expect(docs).to.be.containSubset({
+          rows: [{
+            doc: {
+              _id: 'link',
+              files: {
+                [machine]: {
+                  [path.join(src, 'link')]: 'LINK'
                 }
               }
             }
