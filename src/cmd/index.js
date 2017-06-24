@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
-var parameters = require('./parameters')()
+try {
+  var parameters = require('./parameters')(process.argv)
+} catch (e) {
+  process.exit(-1)
+}
 var PouchDB = require('pouchdb-core')
 var os = require('os')
 var path = require('path')
