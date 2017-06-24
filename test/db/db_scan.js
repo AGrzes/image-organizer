@@ -172,5 +172,13 @@ describe('db_scan', () => {
         done()
       }).catch(done)
     })
+    it('should bubble errors', function (done) {
+      dbScan.initialize({
+        put: () => Promise.reject(new Error('error'))
+      }).catch((error) => error).then((error) => {
+        expect(error.message).to.be.equals('error')
+        done()
+      }).catch(done)
+    })
   })
 })
