@@ -14,7 +14,7 @@ var link = require('../file/link')
 var setTarget = require('./set_target')
 var setStatus = require('./set_status')
 var filterImages = require('./filter_images')
-var enableStream = require('./enable_stream')
+var enableStream = require('enable-stream')
 module.exports = (params, db, exifFunction, machine) => {
   var initialize = Promise.all([dbScan.initialize(db)])
   return initialize.then(() => new Promise((resolve, reject) => miss.pipe(
