@@ -1,0 +1,6 @@
+{
+  "log": {
+    "level": "none",
+    "file": "/dev/null"
+  }
+}
