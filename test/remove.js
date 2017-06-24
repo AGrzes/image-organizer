@@ -7,7 +7,15 @@ describe('remove', () => {
   beforeEach(() => {
     mock({
       '/source': 'source',
-      '/target': 'target'
+      '/target': 'target',
+      '/protected': mock.directory({
+        uid: 0,
+        gid: 0,
+        mode: 0,
+        items: {
+          file: 'file'
+        }
+      })
     })
   })
   afterEach(() => mock.restore())
@@ -19,6 +27,30 @@ describe('remove', () => {
           target: 'target'
         }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/source')).to.be.false
+          done(error)
+        }))
+      })
+
+      it('should set status to absent', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/source',
+          target: 'target'
+        }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            status: 'ABSENT'
+          }])
+          done(error)
+        }))
+      })
+
+      it('should not set status to absent when remove failed', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/protected/file',
+          target: 'target'
+        }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{
+            status: 'ABSENT'
+          }])
           done(error)
         }))
       })

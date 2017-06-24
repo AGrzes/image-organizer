@@ -8,7 +8,7 @@ describe('set_target', () => {
         StreamTest[version].fromObjects([{
           file: 'source/file',
           exif: {
-            FileModifyDate: '1234-12-21'
+            CreateDate: '1234-12-21'
           }
         }]).pipe(setTarget()).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).to.containSubset([{

@@ -46,6 +46,14 @@ describe('fs_lookup', () => {
           done(error)
         }))
       })
+      it('Should discard invalid paths', (done) => {
+        StreamTest[version].fromObjects([{
+          file: '/present/file-under-file'
+        }]).pipe(md5Stream()).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{}])
+          done(error)
+        }))
+      })
     })
   })
 })

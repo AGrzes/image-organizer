@@ -16,14 +16,15 @@ var setStatus = require('./set_status')
 var filterImages = require('./filter_images')
 var enableStream = require('./enable_stream')
 module.exports = (params, db, exifFunction, machine) => {
-  var fsPipeline = miss.pipeline.obj(enableStream.src.obj(fsScan(params.paths, machine), !params.skipScan),
-    md5Stream(),
-    exifStream(exifFunction),
-    filterImages(params.mime),
-    dbLookup(db))
-  var dbPipeline = miss.pipeline.obj(enableStream.src.obj(dbScan(db, params.paths, machine), params.update), fsLookup())
-  return new Promise((resolve, reject) => miss.pipe(
-    MultiStream.obj([fsPipeline, dbPipeline]),
+  var initialize = Promise.all([dbScan.initialize(db)])
+  return initialize.then(() => new Promise((resolve, reject) => miss.pipe(
+    MultiStream.obj([miss.pipeline.obj(enableStream.src.obj(() => fsScan(params.paths, machine), !params.skipScan),
+        md5Stream(),
+        exifStream(exifFunction),
+        filterImages(params.mime),
+        dbLookup(db)),
+      miss.pipeline.obj(enableStream.src.obj(() => dbScan(db, params.paths, machine), params.update),
+        fsLookup())]),
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),
     enableStream.obj(remove(params.target), params.remove),
@@ -36,5 +37,5 @@ module.exports = (params, db, exifFunction, machine) => {
       } else {
         resolve()
       }
-    }))
+    })))
 }
