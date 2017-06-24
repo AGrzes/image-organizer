@@ -28,7 +28,7 @@ var insertDocs = (db, src, machine) => () => Promise.all([db.put({
     }
   },
   exif: {
-    FileModifyDate: '1234-12-21'
+    CreateDate: '1234:12:21'
   }
 }), db.put({
   _id: 'link',
@@ -38,7 +38,17 @@ var insertDocs = (db, src, machine) => () => Promise.all([db.put({
     }
   },
   exif: {
-    FileModifyDate: '1234-12-21'
+    CreateDate: '1234:12:21'
+  }
+}), db.put({
+  _id: 'file1.jpg',
+  files: {
+    [machine]: {
+      [path.join(src, 'file1.jpg')]: 'PRESENT'
+    }
+  },
+  exif: {
+    CreateDate: '1234:12:21'
   }
 })])
 
@@ -128,6 +138,16 @@ describe('index', function () {
       expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
       expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
       expect(fs.realpathSync(path.join(src, 'file1.jpg'))).to.be.equals(path.join(dst, '2000', '05', '06', 'file1.jpg'))
+      done()
+    })
+  })
+
+  it('Should link source files after remove db driven', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l', '-x', '-u']).on('exit', (code) => {
+      expect(fs.existsSync(path.join(dst, '1234', '12', '21', 'file1.jpg'))).to.be.true
+      expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
+      expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
+      expect(fs.realpathSync(path.join(src, 'file1.jpg'))).to.be.equals(path.join(dst, '1234', '12', '21', 'file1.jpg'))
       done()
     })
   })
