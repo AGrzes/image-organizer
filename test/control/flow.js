@@ -65,6 +65,17 @@ describe('flow', () => {
       }
     })]).then(() => done())
   })
+  it('Should handle errors', (done) => {
+    flow({
+      paths: ['/source/empty'],
+      mime: ['**']
+    }, db, () => {
+      throw new Error()
+    }, 'machine').catch(() => 'error').then((error) => {
+      expect(error).to.be.equals('error')
+      done()
+    }).catch(done)
+  })
   it('Should add file to db', (done) => {
     flow({
       paths: ['/source/empty'],
