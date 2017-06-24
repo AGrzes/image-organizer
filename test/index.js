@@ -117,6 +117,28 @@ describe('index', function () {
     })
   })
 
+  it('Should detect duplicates', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
+      db.allDocs({
+        include_docs: true
+      }).then((docs) => {
+        expect(docs).to.be.containSubset({
+          rows: [{
+            doc: {
+              files: {
+                [machine]: {
+                  [path.join(src, 'file1.jpg')]: 'PRESENT',
+                  [path.join(src, 'file1-duplicate.jpg')]: 'PRESENT'
+                }
+              }
+            }
+          }]
+        })
+        done()
+      }).catch(done)
+    })
+  })
+
   it('Should copy source files', (done) => {
     childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c']).on('exit', (code) => {
       expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
