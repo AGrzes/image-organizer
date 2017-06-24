@@ -8,7 +8,7 @@ var fs = require('fs')
 var path = require('path')
 var exifFunction = (filePath) => Promise.resolve({
   path: filePath,
-  FileModifyDate: '1900-01-01',
+  CreateDate: '1900-01-01',
   MIMEType: path.extname(filePath)
 })
 describe('flow', () => {
@@ -36,7 +36,7 @@ describe('flow', () => {
       },
       exif: {
         path: '/source/file1',
-        FileModifyDate: '1900-01-01',
+        CreateDate: '1900-01-01',
         MIMEType: ''
       }
     }), db.put({
@@ -48,7 +48,7 @@ describe('flow', () => {
       },
       exif: {
         path: '/source/not-exist',
-        FileModifyDate: '1900-01-01',
+        CreateDate: '1900-01-01',
         MIMEType: ''
       }
     }), db.put({
@@ -60,7 +60,7 @@ describe('flow', () => {
       },
       exif: {
         path: '/source/link',
-        FileModifyDate: '1900-01-01',
+        CreateDate: '1900-01-01',
         MIMEType: ''
       }
     })]).then(() => done())

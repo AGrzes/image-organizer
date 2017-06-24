@@ -72,6 +72,7 @@ describe('index', function () {
     fs.mkdirSync(tmpdir)
     src = path.join(tmpdir, 'src')
     dst = path.join(tmpdir, 'dst')
+    fs.mkdirSync(dst)
     db = new PouchDB('http://localhost:3000/test_db')
     Promise.all([copyDirectory('test/src', src), waitForDb(db).then(insertDocs(db, src, machine))]).then(() => done()).catch(done)
   })
@@ -103,6 +104,13 @@ describe('index', function () {
         })
         done()
       }).catch(done)
+    })
+  })
+
+  it('Should copy source files', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c']).on('exit', (code) => {
+      expect(fs.existsSync(path.join(dst, '2000', '05', '06'))).to.be.true
+      done()
     })
   })
 
