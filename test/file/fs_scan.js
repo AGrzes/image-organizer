@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var fsScan = require('../fs_scan')
+var fsScan = require('../../src/file/fs_scan')
 var StreamTest = require('streamtest')
 var mock = require('mock-fs')
 describe('fs_scan', () => {

@@ -1,6 +1,6 @@
 var mock = require('mock-fs')
 var expect = require('chai').expect
-var copy = require('../copy')
+var copy = require('../../src/file/copy')
 var StreamTest = require('streamtest')
 var fs = require('fs')
 describe('copy', () => {

@@ -1,4 +1,4 @@
-var exifStream = require('../exif_stream')
+var exifStream = require('../../src/file/exif_stream')
 var expect = require('chai').use(require('chai-subset')).expect
 var StreamTest = require('streamtest')
 describe('fs_lookup', () => {

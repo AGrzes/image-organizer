@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var setTarget = require('../set_target')
+var setTarget = require('../../src/control/set_target')
 var StreamTest = require('streamtest')
 describe('set_target', () => {
   StreamTest.versions.forEach(function (version) {

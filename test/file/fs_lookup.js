@@ -1,4 +1,4 @@
-var md5Stream = require('../fs_lookup')
+var md5Stream = require('../../src/file/fs_lookup')
 var expect = require('chai').use(require('chai-subset')).expect
 var StreamTest = require('streamtest')
 var mock = require('mock-fs')

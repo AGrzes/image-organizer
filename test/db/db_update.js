@@ -1,5 +1,5 @@
 var expect = require('chai').use(require('chai-subset')).expect
-var dbUpdate = require('../db_update')
+var dbUpdate = require('../../src/db/db_update')
 var StreamTest = require('streamtest')
 var PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapreduce'))

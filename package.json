@@ -1,12 +1,12 @@
 {
   "name": "image-organizer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A simple program to organize image collection.",
   "main": "index.js",
-  "bin": "./index.js",
+  "bin": "src/cmd/index.js",
   "scripts": {
     "pretest": "eslint .",
-    "test": "nyc --reporter=html --reporter=text mocha",
+    "test": "nyc --reporter=html --reporter=text mocha --recursive",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "debug": "^2.6.8",
+    "enable-stream": "^1.0.0",
     "fs-extra": "^3.0.1",
     "glob-parent": "^3.1.0",
     "glob-stream": "^6.1.0",
@@ -56,6 +57,7 @@
     "multistream": "^2.1.0",
     "ouch-stream": "^1.1.1",
     "pouchdb-adapter-http": "^6.2.0",
+    "pouchdb-adapter-leveldb": "^6.2.0",
     "pouchdb-core": "^6.2.0",
     "pouchdb-mapreduce": "^6.2.0",
     "simple-exiftool": "^1.1.0",
