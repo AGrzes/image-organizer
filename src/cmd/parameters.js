@@ -1,4 +1,4 @@
-module.exports = () => require('yargs')
+module.exports = (argv) => require('yargs').parse(argv)
   .string('a')
   .alias('a', 'address')
   .boolean('c')
