@@ -109,7 +109,25 @@ describe('index', function () {
 
   it('Should copy source files', (done) => {
     childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c']).on('exit', (code) => {
-      expect(fs.existsSync(path.join(dst, '2000', '05', '06'))).to.be.true
+      expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
+      done()
+    })
+  })
+
+  it('Should remove source files after copy', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r']).on('exit', (code) => {
+      expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
+      expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.false
+      done()
+    })
+  })
+
+  it('Should link source files after remove', (done) => {
+    childProcess.fork('./index', ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l']).on('exit', (code) => {
+      expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
+      expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
+      expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
+      expect(fs.realpathSync(path.join(src, 'file1.jpg'))).to.be.equals(path.join(dst, '2000', '05', '06', 'file1.jpg'))
       done()
     })
   })
