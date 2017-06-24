@@ -3,6 +3,7 @@ var expect = require('chai').expect
 var PouchDB = require('pouchdb-core')
 var os = require('os')
 var fs = require('fs')
+var fse = require('fs-extra')
 var path = require('path')
 PouchDB.plugin(require('pouchdb-adapter-http'))
 
@@ -63,11 +64,12 @@ var copyDirectory = (src, dst) => new Promise((resolve, reject) => {
 })
 
 describe('index', function () {
+  this.timeout(5000)
   var pouchServer
   before(() => {
     pouchServer = childProcess.spawn(path.join(__dirname, '..', '..', 'node_modules/.bin/pouchdb-server'), ['--in-memory', '--port', '3000', '--config', path.join(__dirname, 'pouch-server-config.json')])
   })
-  after((done) => {
+  after(function (done) {
     pouchServer.kill()
     pouchServer.on('exit', () => {
       done()
@@ -77,7 +79,7 @@ describe('index', function () {
   var src
   var dst
   var machine = os.hostname()
-  beforeEach((done) => {
+  beforeEach(function (done) {
     var tmpdir = path.join(os.tmpdir(), (new Date().getTime()).toString())
     fs.mkdirSync(tmpdir)
     src = path.join(tmpdir, 'src')
@@ -86,7 +88,7 @@ describe('index', function () {
     db = new PouchDB('http://localhost:3000/test_db')
     Promise.all([copyDirectory(path.join(__dirname, 'src'), src), waitForDb(db).then(insertDocs(db, src, machine))]).then(() => done()).catch(done)
   })
-  afterEach((done) => {
+  afterEach(function (done) {
     db.destroy().then(() => done()).catch(done)
   })
   it('Should fail with no arguments', (done) => {
@@ -173,6 +175,26 @@ describe('index', function () {
       done()
     })
   })
+  it('Should use local db when not provided address', (done) => {
+    fse.emptyDirSync(path.join(os.homedir(), '.image-organizer'))
+    childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-p', path.join(src, '**'), '-t', dst]).on('exit', (code) => {
+      if (code) {
+        done(new Error(`image-organizer exited with code ${code}`))
+      } else {
+        childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-p', path.join(src, '**'), '-t', dst, '-c', '-r', '-l', '-x', '-u']).on('exit', (code) => {
+          if (code) {
+            done(new Error(`image-organizer exited with code ${code}`))
+          } else {
+            expect(fs.existsSync(path.join(dst, '2000', '05', '06', 'file1.jpg'))).to.be.true
+            expect(fs.existsSync(path.join(src, 'file1.jpg'))).to.be.true
+            expect(fs.lstatSync(path.join(src, 'file1.jpg')).isSymbolicLink()).to.be.true
+            expect(fs.realpathSync(path.join(src, 'file1.jpg'))).to.be.equals(path.join(dst, '2000', '05', '06', 'file1.jpg'))
+            done()
+          }
+        })
+      }
+    })
+  })
 
   it('Should detect absent file', (done) => {
     childProcess.fork(path.join(__dirname, '..', '..', 'src', 'cmd', 'index'), ['-a', 'http://localhost:3000/test_db', '-p', path.join(src, '**'), '-t', dst, '-x', '-u']).on('exit', (code) => {
@@ -217,4 +239,4 @@ describe('index', function () {
       }).catch(done)
     })
   })
-}).timeout(5000)
+})

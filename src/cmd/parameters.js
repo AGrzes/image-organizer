@@ -1,6 +1,6 @@
 module.exports = () => require('yargs')
-  .alias('a', 'adress')
-  .demandOption('a')
+  .string('a')
+  .alias('a', 'address')
   .boolean('c')
   .alias('c', 'copy')
   .describe('c', 'Copy files to target directory')
