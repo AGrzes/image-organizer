@@ -17,6 +17,19 @@ describe('set_target', () => {
           done(error)
         }))
       })
+      it('Should skip element when failed to calculate target', (done) => {
+        StreamTest[version].fromObjects([{
+          file: 'source/file',
+          exif: {
+            CreateDate: 'XXX'
+          }
+        }]).pipe(setTarget()).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).not.to.containSubset([{
+            file: 'source/file'
+          }])
+          done(error)
+        }))
+      })
     })
   })
 })

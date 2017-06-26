@@ -5,7 +5,11 @@ var debug = require('debug')('set_target')
 module.exports = () => miss.through.obj((message, encoding, cb) => {
   debug(message.exif.CreateDate)
   var date = moment(message.exif.CreateDate, 'YYYY:MM:DD HH:mm:ss')
-  message.target = path.join(date.format('YYYY'), date.format('MM'), date.format('DD'), path.basename(message.file))
-  debug(message.target)
-  cb(null, message)
+  if (date.isValid()) {
+    message.target = path.join(date.format('YYYY'), date.format('MM'), date.format('DD'), path.basename(message.file))
+    debug(message.target)
+    cb(null, message)
+  } else {
+    cb()
+  }
 })
