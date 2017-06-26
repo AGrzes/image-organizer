@@ -130,7 +130,7 @@ describe('index', function () {
               files: {
                 [machine]: {
                   [path.join(src, 'file1.jpg')]: 'PRESENT',
-                  [path.join(src, 'file1-duplicate.jpg')]: 'PRESENT'
+                  [path.join(src, 'duplicate', 'file1.jpg')]: 'PRESENT'
                 }
               }
             }
