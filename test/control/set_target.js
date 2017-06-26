@@ -17,6 +17,20 @@ describe('set_target', () => {
           done(error)
         }))
       })
+      it('Should use exif filename if known', (done) => {
+        StreamTest[version].fromObjects([{
+          file: 'source/file',
+          exif: {
+            CreateDate: '1234-12-21',
+            FileName: 'another'
+          }
+        }]).pipe(setTarget()).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.containSubset([{
+            target: '1234/12/21/another'
+          }])
+          done(error)
+        }))
+      })
       it('Should skip element when failed to calculate target', (done) => {
         StreamTest[version].fromObjects([{
           file: 'source/file',
