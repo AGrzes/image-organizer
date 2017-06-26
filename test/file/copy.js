@@ -17,7 +17,8 @@ describe('copy', () => {
       it('should copy file', function (done) {
         StreamTest[version].fromObjects([{
           file: '/source',
-          target: 'target'
+          target: 'target',
+          exif: {}
         }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/target')).to.be.true
           expect(fs.readFileSync('/target', 'UTF-8')).to.be.equal('source')
@@ -41,7 +42,8 @@ describe('copy', () => {
       it('should not override existing file', function (done) {
         StreamTest[version].fromObjects([{
           file: '/source',
-          target: 'exist'
+          target: 'exist',
+          exif: {}
         }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/exist')).to.be.true
           expect(fs.readFileSync('/exist', 'UTF-8')).to.be.equal('exist')
@@ -51,7 +53,8 @@ describe('copy', () => {
       it('should skip missing source', function (done) {
         StreamTest[version].fromObjects([{
           file: '/not-exist',
-          target: 'target'
+          target: 'target',
+          exif: {}
         }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
           expect(fs.existsSync('/target')).to.be.false
           done(error)
