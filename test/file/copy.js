@@ -8,7 +8,12 @@ describe('copy', () => {
   beforeEach(() => {
     mock({
       '/source': 'source',
-      '/exist': 'exist'
+      '/exist': 'exist',
+      '/protected': mock.directory({
+        uid: 0,
+        gid: 0,
+        mode: 0
+      })
     })
   })
   afterEach(() => mock.restore())
@@ -38,7 +43,15 @@ describe('copy', () => {
           done(error)
         }))
       })
-
+      it('should continue despite failure', function (done) {
+        StreamTest[version].fromObjects([{
+          file: '/source',
+          target: 'protected/target',
+          exif: {}
+        }]).pipe(copy('/')).pipe(StreamTest[version].toObjects((error) => {
+          done(error)
+        }))
+      })
       it('should not override existing file', function (done) {
         StreamTest[version].fromObjects([{
           file: '/source',
