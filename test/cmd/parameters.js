@@ -89,8 +89,20 @@ describe('parameters', () => {
     var params = parameters(['-t', 'target', '-p', '**'])
     expect(params.target).to.be.equals('target')
   })
-  it('Should recognize long address', () => {
+  it('Should recognize long target', () => {
     var params = parameters(['--target', 'target', '-p', '**'])
     expect(params.target).to.be.equals('target')
+  })
+  it('Should start in silent mode', () => {
+    var params = parameters(['-p', '**'])
+    expect(params.verbose).to.be.equals(0)
+  })
+  it('Should recognize verbose flag', () => {
+    var params = parameters(['-p', '**', '-v'])
+    expect(params.verbose).to.be.equals(1)
+  })
+  it('Should count verbose flags', () => {
+    var params = parameters(['-p', '**', '-vvv'])
+    expect(params.verbose).to.be.equals(3)
   })
 })

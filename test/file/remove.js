@@ -11,10 +11,7 @@ describe('remove', () => {
       '/protected': mock.directory({
         uid: 0,
         gid: 0,
-        mode: 0,
-        items: {
-          file: 'file'
-        }
+        mode: 0
       })
     })
   })
@@ -45,7 +42,7 @@ describe('remove', () => {
 
       it('should not set status to absent when remove failed', function (done) {
         StreamTest[version].fromObjects([{
-          file: '/protected/file',
+          file: '/protected',
           target: 'target'
         }]).pipe(remove('/')).pipe(StreamTest[version].toObjects((error, objects) => {
           expect(objects).not.to.containSubset([{
