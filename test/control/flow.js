@@ -9,7 +9,7 @@ var path = require('path')
 var exifFunction = (filePath) => Promise.resolve({
   path: filePath,
   CreateDate: '1900-01-01',
-  MIMEType: path.extname(filePath)
+  MIMEType: 'MIMEType' + path.extname(filePath)
 })
 describe('flow', () => {
   beforeEach((done) => {
@@ -37,7 +37,7 @@ describe('flow', () => {
       exif: {
         path: '/source/file1',
         CreateDate: '1900-01-01',
-        MIMEType: ''
+        MIMEType: 'MIMEType'
       }
     }), db.put({
       _id: 'absent',
@@ -49,7 +49,7 @@ describe('flow', () => {
       exif: {
         path: '/source/not-exist',
         CreateDate: '1900-01-01',
-        MIMEType: ''
+        MIMEType: 'MIMEType'
       }
     }), db.put({
       _id: 'link',
@@ -61,7 +61,7 @@ describe('flow', () => {
       exif: {
         path: '/source/link',
         CreateDate: '1900-01-01',
-        MIMEType: ''
+        MIMEType: 'MIMEType'
       }
     })]).then(() => done())
   })
@@ -229,7 +229,7 @@ describe('flow', () => {
   it('Should filter out specified mime types', (done) => {
     flow({
       paths: ['/source/file.bad'],
-      mime: ['!.bad']
+      mime: ['!MIMEType.bad']
     }, db, exifFunction, 'machine').then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
       expect(doc).to.be.undefined
       done()
