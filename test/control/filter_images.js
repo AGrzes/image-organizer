@@ -66,6 +66,30 @@ describe('filter_images', () => {
           done(error)
         }))
       })
+      it('Should reject undefined', (done) => {
+        StreamTest[version].fromObjects([{
+          exif: {
+            MIMEType: 'match'
+          }
+        }, {
+          exif: {
+            MIMEType: undefined,
+            flag: 'not-match'
+          }
+        }]).pipe(filterImages(['**'])).pipe(StreamTest[version].toObjects((error, objects) => {
+          expect(objects).to.be.deep.equals([{
+            exif: {
+              MIMEType: 'match'
+            }
+          }])
+          expect(objects).not.to.be.deep.equals([{
+            exif: {
+              flag: 'not-match'
+            }
+          }])
+          done(error)
+        }))
+      })
     })
   })
 })
