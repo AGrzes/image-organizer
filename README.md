@@ -37,3 +37,4 @@ image-organizer <parameters>
 |-t | --target | path | - | Target directory |
 | -p | --paths | glob[] | - | Paths to scan |
 | -m | --mime | pattern[] | ['image/**] | Mime types of files to process |
+|-v | --verbose | flag* | 0 | Verbosity mode |
