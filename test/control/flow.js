@@ -3,9 +3,11 @@ var flow = require('../../src/control/flow')
 var PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-memory')).plugin(require('pouchdb-mapreduce'))
 var mock = require('mock-fs')
+var devNull = require('dev-null')
 var db
 var fs = require('fs')
 var path = require('path')
+var StreamTest = require('streamtest')
 var exifFunction = (filePath) => Promise.resolve({
   path: filePath,
   CreateDate: '1900-01-01',
@@ -71,7 +73,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, () => {
       throw new Error()
-    }, 'machine').catch(() => 'error').then((error) => {
+    }, 'machine', devNull()).catch(() => 'error').then((error) => {
       expect(error).to.be.equals('error')
       done()
     }).catch(done)
@@ -80,7 +82,7 @@ describe('flow', () => {
     flow({
       paths: ['/source/empty'],
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -95,7 +97,7 @@ describe('flow', () => {
     flow({
       paths: ['/source/empty', '/source/empty2'],
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -113,7 +115,7 @@ describe('flow', () => {
       copy: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -132,7 +134,7 @@ describe('flow', () => {
       copy: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -151,7 +153,7 @@ describe('flow', () => {
       remove: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -171,7 +173,7 @@ describe('flow', () => {
       remove: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -190,7 +192,7 @@ describe('flow', () => {
       link: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -211,7 +213,7 @@ describe('flow', () => {
       link: true,
       target: '/target',
       mime: ['**']
-    }, db, exifFunction, 'machine').then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -230,7 +232,7 @@ describe('flow', () => {
     flow({
       paths: ['/source/file.bad'],
       mime: ['!MIMEType.bad']
-    }, db, exifFunction, 'machine').then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('bae60998ffe4923b131e3d6e4c19993e')).then((doc) => {
       expect(doc).to.be.undefined
       done()
     }).catch((err) => {
@@ -243,7 +245,7 @@ describe('flow', () => {
       paths: ['/source/empty'],
       mime: ['**'],
       skipScan: true
-    }, db, exifFunction, 'machine').then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.be.undefined
       done()
     }).catch((err) => {
@@ -257,7 +259,7 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction, 'machine').then(() => db.get('present')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('present')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -274,7 +276,7 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction, 'machine').then(() => db.get('absent')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('absent')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -291,7 +293,7 @@ describe('flow', () => {
       mime: ['**'],
       skipScan: true,
       update: true
-    }, db, exifFunction, 'machine').then(() => db.get('link')).then((doc) => {
+    }, db, exifFunction, 'machine', devNull()).then(() => db.get('link')).then((doc) => {
       expect(doc).to.containSubset({
         'files': {
           machine: {
@@ -301,6 +303,21 @@ describe('flow', () => {
       })
       done()
     }).catch(done)
+  })
+  StreamTest.versions.forEach(function (version) {
+    describe('for ' + version + ' streams', function () {
+      it('Should log progress', (done) => {
+        var testStream = StreamTest[version].toText((error, text) => {
+          expect(text).to.be.equals('Processing machine:/source/empty\n')
+          done(error)
+        })
+        flow({
+          paths: ['/source/empty'],
+          mime: ['**'],
+          verbose: 1
+        }, db, exifFunction, 'machine', testStream).then(() => testStream.end()).catch(done)
+      })
+    })
   })
   afterEach(() => {
     mock.restore()
