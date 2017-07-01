@@ -15,15 +15,18 @@ var setTarget = require('./set_target')
 var setStatus = require('./set_status')
 var filterImages = require('./filter_images')
 var enableStream = require('enable-stream')
-module.exports = (params, db, exifFunction, machine) => {
+var report = require('./report')
+module.exports = (params, db, exifFunction, machine, logStream) => {
   var initialize = Promise.all([dbScan.initialize(db)])
   return initialize.then(() => new Promise((resolve, reject) => miss.pipe(
     MultiStream.obj([miss.pipeline.obj(enableStream.src.obj(() => fsScan(params.paths, machine), !params.skipScan),
+        enableStream.obj(report(logStream), params.verbose >= 1),
         md5Stream(),
         exifStream(exifFunction),
         filterImages(params.mime),
         dbLookup(db)),
       miss.pipeline.obj(enableStream.src.obj(() => dbScan(db, params.paths, machine), params.update),
+        enableStream.obj(report(logStream), params.verbose >= 1),
         fsLookup())]),
     setTarget(),
     enableStream.obj(copy(params.target), params.copy),

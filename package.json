@@ -29,6 +29,7 @@
     "chai-datetime": "^1.4.1",
     "chai-subset": "^1.5.0",
     "coveralls": "^2.13.1",
+    "dev-null": "^0.1.1",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.3.0",
