@@ -1,0 +1,19 @@
+@startuml
+(*) --> "fs_scan"
+-> "report" as report1
+-> "md5_stream"
+-> "exif_stream"
+-> "filter_images"
+-> "db_lookup"
+-> "set_target"
+(*) -> "db_scan"
+-> "report" as report2
+-> "fs_lookup"
+-> "set_target"
+--> "copy"
+-left-> "remove"
+-left-> "link"
+-left-> "set_status"
+-left-> "db_update"
+-left-> (*)
+@enduml
