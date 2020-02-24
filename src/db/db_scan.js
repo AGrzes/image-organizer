@@ -24,11 +24,11 @@ module.exports = (db, patterns, machine) => {
 }
 module.exports.initialize = (db) => {
   var viewDesign = {
-    '_id': '_design/db_scan',
-    'language': 'javascript',
-    'views': {
-      'db_scan': {
-        'map': `
+    _id: '_design/db_scan',
+    language: 'javascript',
+    views: {
+      db_scan: {
+        map: `
   function (doc) {
     if (doc.files) {
       for (var machine in doc.files) {

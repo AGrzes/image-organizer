@@ -13,7 +13,7 @@ describe('db_scan', () => {
     Promise.all([db.put({
       _id: 'file1',
       files: {
-        'machine': {
+        machine: {
           '/base/dir1/file1': 'PRESENT'
         }
       },
@@ -21,14 +21,14 @@ describe('db_scan', () => {
     }), db.put({
       _id: 'file2',
       files: {
-        'machine': {
+        machine: {
           '/base/dir2/file2': 'PRESENT'
         }
       }
     }), db.put({
       _id: 'file3',
       files: {
-        'machine': {
+        machine: {
           '/another/dir3/file3': 'PRESENT',
           '/another/dir3/file4': 'PRESENT'
         }
@@ -143,7 +143,7 @@ describe('db_scan', () => {
           expect(objects).not.to.containSubset([{
             doc: {
               files: {
-                'machine': {
+                machine: {
                   '/base/dir1/file1': 'PRESENT'
                 }
               }

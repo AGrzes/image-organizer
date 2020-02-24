@@ -84,7 +84,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/empty': 'PRESENT'
           }
@@ -99,7 +99,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('d41d8cd98f00b204e9800998ecf8427e')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/empty': 'PRESENT',
             '/source/empty2': 'PRESENT'
@@ -117,7 +117,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/file1': 'PRESENT'
           }
@@ -136,7 +136,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/exist': 'PRESENT'
           }
@@ -155,7 +155,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/exist': 'ABSENT'
           }
@@ -175,7 +175,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('826e8142e6baabe8af779f5f490cf5f5')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/file1': 'PRESENT'
           }
@@ -194,7 +194,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/exist': 'LINK'
           }
@@ -215,7 +215,7 @@ describe('flow', () => {
       mime: ['**']
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('59d61554157b210bf431b40d57818b11')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/exist': 'PRESENT'
           }
@@ -261,7 +261,7 @@ describe('flow', () => {
       update: true
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('present')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/file1': 'PRESENT'
           }
@@ -278,7 +278,7 @@ describe('flow', () => {
       update: true
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('absent')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/not-exist': 'ABSENT'
           }
@@ -295,7 +295,7 @@ describe('flow', () => {
       update: true
     }, db, exifFunction, 'machine', devNull()).then(() => db.get('link')).then((doc) => {
       expect(doc).to.containSubset({
-        'files': {
+        files: {
           machine: {
             '/source/link': 'LINK'
           }
