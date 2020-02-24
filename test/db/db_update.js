@@ -29,14 +29,18 @@ describe('db_scan', () => {
           doc: {
             _id: version + '_doc2',
             files: {
-              file1: 'PRESENT'
+              machine: {
+                file1: 'PRESENT'
+              }
             }
           }
         }, {
           doc: {
             _id: version + '_doc2',
             files: {
-              file2: 'PRESENT'
+              machine: {
+                file2: 'PRESENT'
+              }
             }
           }
         }]), dbUpdate(db), (err) => {
@@ -46,8 +50,10 @@ describe('db_scan', () => {
             db.get(version + '_doc2').then((doc) => {
               expect(doc).to.containSubset({
                 files: {
-                  file1: 'PRESENT',
-                  file2: 'PRESENT'
+                  machine: {
+                    file1: 'PRESENT',
+                    file2: 'PRESENT'
+                  }
                 }
               })
               done()
@@ -60,14 +66,18 @@ describe('db_scan', () => {
           doc: {
             _id: version + '_doc3',
             files: {
-              file1: 'PRESENT'
+              machine: {
+                file1: 'PRESENT'
+              }
             }
           }
         }, {
           doc: {
             _id: version + '_doc3',
             files: {
-              file1: 'ABSENT'
+              machine: {
+                file1: 'ABSENT'
+              }
             }
           }
         }]), dbUpdate(db), (err) => {
@@ -77,7 +87,9 @@ describe('db_scan', () => {
             db.get(version + '_doc3').then((doc) => {
               expect(doc).to.containSubset({
                 files: {
-                  file1: 'ABSENT'
+                  machine: {
+                    file1: 'ABSENT'
+                  }
                 }
               })
               done()
