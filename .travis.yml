@@ -1,8 +1,8 @@
 sudo: false
 language: node_js
 node_js:
-- 6
-- 7
+- 12
+- 10
 - 8
 after_success: npm run coverage
 env:
